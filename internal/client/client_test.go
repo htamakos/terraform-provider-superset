@@ -5,6 +5,7 @@ package client
 
 import (
 	"context"
+	"os"
 	"strings"
 	"testing"
 )
@@ -15,7 +16,15 @@ var (
 	testServerPassword = "admin"
 )
 
+func skipIfNoClientTest(t *testing.T) {
+	if os.Getenv("EXECUTE_CLIENT_TEST") != "1" {
+		t.Skip("Skipping client tests. Set CLIENT_TEST=1 to run them.")
+	}
+}
+
 func TestAuthenticate(t *testing.T) {
+	skipIfNoClientTest(t)
+
 	ctx := context.Background()
 	client, err := NewClientWithResponses(testServerBaseUrl)
 	if err != nil {
@@ -40,6 +49,8 @@ func TestAuthenticate(t *testing.T) {
 
 // TestUserApis tests user-related APIs.
 func TestUserApis(t *testing.T) {
+	skipIfNoClientTest(t)
+
 	ctx := context.Background()
 	client, err := NewClientWrapper(ctx, testServerBaseUrl, ClientCredentials{Username: testServerUser, Password: testServerPassword})
 	if err != nil {
@@ -89,12 +100,12 @@ func TestUserApis(t *testing.T) {
 		t.Fatalf("failed to update user: %v", err)
 	}
 
-	u, err = client.GetUser(ctx, user.Id)
+	_, err = client.GetUser(ctx, user.Id)
 	if err != nil {
 		t.Fatalf("failed to get user after update: %v", err)
 	}
 
-	u, err = client.UpdateUser(ctx, user.Id, SupersetUserApiPut{
+	_, err = client.UpdateUser(ctx, user.Id, SupersetUserApiPut{
 		Groups: []int{},
 	})
 	if err != nil {
@@ -123,6 +134,8 @@ func TestUserApis(t *testing.T) {
 }
 
 func TestRoleApis(t *testing.T) {
+	skipIfNoClientTest(t)
+
 	ctx := context.Background()
 	client, err := NewClientWrapper(ctx, testServerBaseUrl, ClientCredentials{Username: testServerUser, Password: testServerPassword})
 	if err != nil {
@@ -166,6 +179,8 @@ func TestRoleApis(t *testing.T) {
 }
 
 func TestGroupApis(t *testing.T) {
+	skipIfNoClientTest(t)
+
 	ctx := context.Background()
 	client, err := NewClientWrapper(ctx, testServerBaseUrl, ClientCredentials{Username: testServerUser, Password: testServerPassword})
 	if err != nil {
@@ -231,6 +246,8 @@ func TestGroupApis(t *testing.T) {
 }
 
 func TestRolePermissionsApi(t *testing.T) {
+	skipIfNoClientTest(t)
+
 	ctx := context.Background()
 	client, err := NewClientWrapper(ctx, testServerBaseUrl, ClientCredentials{Username: testServerUser, Password: testServerPassword})
 	if err != nil {
@@ -244,6 +261,8 @@ func TestRolePermissionsApi(t *testing.T) {
 }
 
 func TestResourcePermissionsApi(t *testing.T) {
+	skipIfNoClientTest(t)
+
 	ctx := context.Background()
 	client, err := NewClientWrapper(ctx, testServerBaseUrl, ClientCredentials{Username: testServerUser, Password: testServerPassword})
 	if err != nil {
@@ -257,6 +276,8 @@ func TestResourcePermissionsApi(t *testing.T) {
 }
 
 func TestDatabaseApis(t *testing.T) {
+	skipIfNoClientTest(t)
+
 	ctx := context.Background()
 	client, err := NewClientWrapper(ctx, testServerBaseUrl, ClientCredentials{Username: testServerUser, Password: testServerPassword})
 	if err != nil {

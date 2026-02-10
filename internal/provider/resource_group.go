@@ -43,30 +43,30 @@ func (r *GroupResource) Metadata(ctx context.Context, req resource.MetadataReque
 
 func (r *GroupResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-        MarkdownDescription: "Manage a superset group",
+		MarkdownDescription: "Manage a superset group",
 
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Computed:            true,
-                MarkdownDescription: "The ID of the group.",
+				MarkdownDescription: "The ID of the group.",
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.UseStateForUnknown(),
 				},
 			},
 			"name": schema.StringAttribute{
 				Required:            true,
-                MarkdownDescription: "The name of the group.",
+				MarkdownDescription: "The name of the group.",
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
-            "label": schema.StringAttribute{
-                Optional:            true,
-                MarkdownDescription: "The label of the group.",
-                PlanModifiers: []planmodifier.String{
-                    stringplanmodifier.UseStateForUnknown(),
-                },
-            },
+			"label": schema.StringAttribute{
+				Optional:            true,
+				MarkdownDescription: "The label of the group.",
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"timeouts": timeouts.Attributes(ctx, timeouts.Opts{
 				Create: true, Update: true, Delete: true,
 			}),
@@ -105,22 +105,22 @@ func (r *GroupResource) Create(ctx context.Context, req resource.CreateRequest, 
 	ctx, cancel := SetupTimeoutCreate(ctx, r.Timeouts, Timeout5min)
 	defer cancel()
 
-    postData := client.SupersetGroupApiPost{
-        Name: data.Name.ValueString(),
-    }
-    if !data.Label.IsNull() {
-        postData.Label = nullable.NewNullableWithValue(data.Label.ValueString())
-    }
+	postData := client.SupersetGroupApiPost{
+		Name: data.Name.ValueString(),
+	}
+	if !data.Label.IsNull() {
+		postData.Label = nullable.NewNullableWithValue(data.Label.ValueString())
+	}
 
-    existingGroup, err := r.client.FindGroup(ctx, postData.Name)
-    if !client.IsNotFound(err) && err != nil {
-        resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to validate group name uniqueness: %s", err))
-        return
-    }
-    if existingGroup != nil {
-        resp.Diagnostics.AddError("Client Error", fmt.Sprintf("A group with name '%s' already exists with ID %d", postData.Name, existingGroup.Id))
-        return
-    }
+	existingGroup, err := r.client.FindGroup(ctx, postData.Name)
+	if !client.IsNotFound(err) && err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to validate group name uniqueness: %s", err))
+		return
+	}
+	if existingGroup != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("A group with name '%s' already exists with ID %d", postData.Name, existingGroup.Id))
+		return
+	}
 
 	g, err := r.client.CreateGroup(ctx, postData)
 
@@ -144,16 +144,16 @@ func (r *GroupResource) Read(ctx context.Context, req resource.ReadRequest, resp
 
 	ctx, cancel := SetupTimeoutCreate(ctx, r.Timeouts, Timeout5min)
 	defer cancel()
-    g, err := r.client.GetGroup(ctx, int(data.Id.ValueInt64()))
-    if client.IsNotFound(err) {
-        resp.State.RemoveResource(ctx)
-        return
-    } else if err != nil {
-        resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read group with ID %d: %s", data.Id.ValueInt64(), err))
-        return
-    }
+	g, err := r.client.GetGroup(ctx, int(data.Id.ValueInt64()))
+	if client.IsNotFound(err) {
+		resp.State.RemoveResource(ctx)
+		return
+	} else if err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read group with ID %d: %s", data.Id.ValueInt64(), err))
+		return
+	}
 
-    data.updateState(g)
+	data.updateState(g)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
@@ -171,21 +171,21 @@ func (r *GroupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 	ctx, cancel := SetupTimeoutCreate(ctx, r.Timeouts, Timeout5min)
 	defer cancel()
 
-    putData := client.SupersetGroupApiPut{
-        Name: plan.Name.ValueString(),
-    }
-    if !plan.Label.IsNull() {
-        putData.Label = nullable.NewNullableWithValue(plan.Label.ValueString())
-    }
+	putData := client.SupersetGroupApiPut{
+		Name: plan.Name.ValueString(),
+	}
+	if !plan.Label.IsNull() {
+		putData.Label = nullable.NewNullableWithValue(plan.Label.ValueString())
+	}
 
-    g, err := r.client.UpdateGroup(ctx, int(state.Id.ValueInt64()), putData)
+	g, err := r.client.UpdateGroup(ctx, int(state.Id.ValueInt64()), putData)
 
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update group with ID %d: %s", state.Id.ValueInt64(), err))
 		return
 	}
 
-    state.updateState(g)
+	state.updateState(g)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
@@ -198,10 +198,10 @@ func (r *GroupResource) Delete(ctx context.Context, req resource.DeleteRequest, 
 	ctx, cancel := SetupTimeoutCreate(ctx, r.Timeouts, Timeout5min)
 	defer cancel()
 
-    err := r.client.DeleteGroup(ctx, int(state.Id.ValueInt64()))
+	err := r.client.DeleteGroup(ctx, int(state.Id.ValueInt64()))
 	if err != nil {
-        resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete group with ID %d: %s", state.Id.ValueInt64(), err))
-        return
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete group with ID %d: %s", state.Id.ValueInt64(), err))
+		return
 	}
 
 	if resp.Diagnostics.HasError() {
@@ -224,5 +224,5 @@ func (r *GroupResource) ImportState(ctx context.Context, req resource.ImportStat
 		return
 	}
 
-	resp.State.SetAttribute(ctx, path.Root("id"), id) 
+	resp.State.SetAttribute(ctx, path.Root("id"), id)
 }

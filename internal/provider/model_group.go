@@ -14,11 +14,6 @@ type groupBaseModel struct {
 	Name  types.String `tfsdk:"name"`
 }
 
-type groupUserModel struct {
-	Id       types.Int64  `tfsdk:"id"`
-	Username types.String `tfsdk:"username"`
-}
-
 func (model *groupBaseModel) updateState(g *client.SupersetGroupApiGet) {
 	model.Id = types.Int64Value(int64(g.Id))
 	if g.Label.IsNull() {

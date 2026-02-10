@@ -4,8 +4,8 @@
 package utils
 
 import (
+	"context"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-    "context"
 )
 
 func StringsToTlist(values []string) types.List {

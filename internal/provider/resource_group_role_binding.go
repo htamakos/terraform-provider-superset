@@ -8,6 +8,7 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
+	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -16,7 +17,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
-    "github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/htamakos/terraform-provider-superset/internal/client"
@@ -69,9 +69,9 @@ func (r *GroupRoleBindingResource) Schema(ctx context.Context, req resource.Sche
 					setplanmodifier.UseStateForUnknown(),
 				},
 				MarkdownDescription: "Role names to assign to the group.",
-                Validators: []validator.Set{
-                    setvalidator.SizeAtLeast(1),
-                },
+				Validators: []validator.Set{
+					setvalidator.SizeAtLeast(1),
+				},
 			},
 			"timeouts": timeouts.Attributes(ctx, timeouts.Opts{
 				Create: true, Update: true, Delete: true,
@@ -128,18 +128,18 @@ func (r *GroupRoleBindingResource) Create(ctx context.Context, req resource.Crea
 		return
 	}
 
-    groupId := int(group.Id)
+	groupId := group.Id
 	err = r.client.AssignRolesToGroup(ctx, groupId, roleIds)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to assign roles to group ID %d: %s", groupId, err))
 		return
 	}
 
-    group, err = r.client.FindGroup(ctx, data.GroupName.ValueString())
-    if err != nil {
-        resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to find group with name %s: %s", data.GroupName.ValueString(), err))
-        return
-    }
+	group, err = r.client.FindGroup(ctx, data.GroupName.ValueString())
+	if err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to find group with name %s: %s", data.GroupName.ValueString(), err))
+		return
+	}
 
 	data.updateState(group)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
@@ -159,9 +159,9 @@ func (r *GroupRoleBindingResource) Read(ctx context.Context, req resource.ReadRe
 
 	group, err := r.client.FindGroup(ctx, data.GroupName.ValueString())
 	if client.IsNotFound(err) {
-        resp.State.RemoveResource(ctx)
-        return
-    } else if err != nil {
+		resp.State.RemoveResource(ctx)
+		return
+	} else if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to get group with ID %d Name: %s: %s,", data.GroupId.ValueInt64(), data.GroupName.ValueString(), err))
 		return
 	}
@@ -183,29 +183,29 @@ func (r *GroupRoleBindingResource) Update(ctx context.Context, req resource.Upda
 	ctx, cancel := SetupTimeoutCreate(ctx, r.Timeouts, Timeout5min)
 	defer cancel()
 
-    sourceRoles, err := r.client.ListRoles(ctx)
-    if err != nil {
-        resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to list roles: %s", err))
-        return
-    }
-    roleIds, notFoundRoles := plan.resolveRoleIds(sourceRoles)
-    if len(notFoundRoles) > 0 {
-        resp.Diagnostics.AddError("Invalid Roles", fmt.Sprintf("The following roles were not found: %v", notFoundRoles))
-        return
-    }
-    groupId := int(plan.GroupId.ValueInt64())
-    err = r.client.AssignRolesToGroup(ctx, groupId, roleIds)
-    if err != nil {
-        resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to assign roles to group ID %d: %s", groupId, err))
-        return
-    }
-    group, err := r.client.FindGroup(ctx, plan.GroupName.ValueString())
-    if err != nil {
-        resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to find group with name %s: %s", plan.GroupName.ValueString(), err))
-        return
-    }
+	sourceRoles, err := r.client.ListRoles(ctx)
+	if err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to list roles: %s", err))
+		return
+	}
+	roleIds, notFoundRoles := plan.resolveRoleIds(sourceRoles)
+	if len(notFoundRoles) > 0 {
+		resp.Diagnostics.AddError("Invalid Roles", fmt.Sprintf("The following roles were not found: %v", notFoundRoles))
+		return
+	}
+	groupId := int(plan.GroupId.ValueInt64())
+	err = r.client.AssignRolesToGroup(ctx, groupId, roleIds)
+	if err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to assign roles to group ID %d: %s", groupId, err))
+		return
+	}
+	group, err := r.client.FindGroup(ctx, plan.GroupName.ValueString())
+	if err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to find group with name %s: %s", plan.GroupName.ValueString(), err))
+		return
+	}
 
-    state.updateState(group)
+	state.updateState(group)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -217,12 +217,12 @@ func (r *GroupRoleBindingResource) Delete(ctx context.Context, req resource.Dele
 	ctx, cancel := SetupTimeoutCreate(ctx, r.Timeouts, Timeout5min)
 	defer cancel()
 
-    groupId := int(state.GroupId.ValueInt64())
-    err := r.client.AssignRolesToGroup(ctx, groupId, []int{})
-    if err != nil {
-        resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to remove all roles from group ID %d: %s", groupId, err))
-        return
-    }
+	groupId := int(state.GroupId.ValueInt64())
+	err := r.client.AssignRolesToGroup(ctx, groupId, []int{})
+	if err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to remove all roles from group ID %d: %s", groupId, err))
+		return
+	}
 
 	if resp.Diagnostics.HasError() {
 		return

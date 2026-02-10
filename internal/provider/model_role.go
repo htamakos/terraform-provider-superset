@@ -14,6 +14,6 @@ type roleBaseModel struct {
 }
 
 func (model *roleBaseModel) updateState(r *client.SupersetRoleApiGet) {
-    model.Id = types.Int64Value(int64(r.Id))
-    model.Name = types.StringValue(r.Name)
+	model.Id = types.Int64Value(int64(r.Id))
+	model.Name = types.StringValue(r.Name)
 }

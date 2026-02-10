@@ -16,7 +16,7 @@ type userBaseModel struct {
 	FirstName  types.String `tfsdk:"first_name"`
 	LastName   types.String `tfsdk:"last_name"`
 	Password   types.String `tfsdk:"password"`
-    RoleNames  types.Set    `tfsdk:"role_names"`
+	RoleNames  types.Set    `tfsdk:"role_names"`
 	GroupNames types.Set    `tfsdk:"group_names"`
 	Active     types.Bool   `tfsdk:"active"`
 }
@@ -36,7 +36,11 @@ func (model *userBaseModel) resolveGroupIDsFromNames(sourceGroups []client.Super
 
 	groupNamesList := model.GroupNames.Elements()
 	for _, g := range groupNamesList {
-		nameAttrValue := g.(types.String).ValueString()
+		v, ok := g.(types.String)
+		if !ok || v.IsNull() {
+			panic("unexpected type of group name attribute value")
+		}
+		nameAttrValue := v.ValueString()
 		sourceGroupId, exists := sourceGroupNameIdMap[nameAttrValue]
 		if !exists {
 			notFoundGroups = append(notFoundGroups, nameAttrValue)
@@ -49,30 +53,34 @@ func (model *userBaseModel) resolveGroupIDsFromNames(sourceGroups []client.Super
 }
 
 func (model *userBaseModel) resolveRoleIDsFromNames(sourceRoles []client.SupersetRoleApiGetList) ([]int, []string) {
-    var ids []int
-    if model.RoleNames.IsNull() {
-        return ids, nil
-    }
+	var ids []int
+	if model.RoleNames.IsNull() {
+		return ids, nil
+	}
 
-    sourceRoleNameIdMap := make(map[string]int)
-    for _, r := range sourceRoles {
-        sourceRoleNameIdMap[r.Name] = r.Id
-    }
+	sourceRoleNameIdMap := make(map[string]int)
+	for _, r := range sourceRoles {
+		sourceRoleNameIdMap[r.Name] = r.Id
+	}
 
-    notFoundRoles := make([]string, 0)
+	notFoundRoles := make([]string, 0)
 
-    roleNamesList := model.RoleNames.Elements()
-    for _, r := range roleNamesList {
-        nameAttrValue := r.(types.String).ValueString()
-        sourceRoleId, exists := sourceRoleNameIdMap[nameAttrValue]
-        if !exists {
-            notFoundRoles = append(notFoundRoles, nameAttrValue)
-            continue
-        }
-        ids = append(ids, sourceRoleId)
-    }
+	roleNamesList := model.RoleNames.Elements()
+	for _, r := range roleNamesList {
+		v, ok := r.(types.String)
+		if !ok || v.IsNull() {
+			panic("unexpected type of role name attribute value")
+		}
+		nameAttrValue := v.ValueString()
+		sourceRoleId, exists := sourceRoleNameIdMap[nameAttrValue]
+		if !exists {
+			notFoundRoles = append(notFoundRoles, nameAttrValue)
+			continue
+		}
+		ids = append(ids, sourceRoleId)
+	}
 
-    return ids, notFoundRoles
+	return ids, notFoundRoles
 }
 
 func (model *userBaseModel) updateState(u *client.SupersetUserApiGet, password *string) {
@@ -87,11 +95,11 @@ func (model *userBaseModel) updateState(u *client.SupersetUserApiGet, password *
 	} else {
 		model.Active = types.BoolValue(u.Active.MustGet())
 	}
-    if password != nil {
-        model.Password = types.StringValue(*password)
-    } else {
-        model.Password = types.StringNull()
-    }
+	if password != nil {
+		model.Password = types.StringValue(*password)
+	} else {
+		model.Password = types.StringNull()
+	}
 	model.RoleNames = model.flattenRoleNamesToSet(u)
 	model.GroupNames = model.flattenGroupNamesToSet(u)
 }
@@ -107,11 +115,11 @@ func (model *userBaseModel) flattenGroupNamesToSet(u *client.SupersetUserApiGet)
 }
 
 func (m *userBaseModel) flattenRoleNamesToSet(u *client.SupersetUserApiGet) types.Set {
-    elems := make([]attr.Value, 0, len(u.Roles))
-    for _, r := range u.Roles {
-        elems = append(elems, types.StringValue(r.Name))
-    }
+	elems := make([]attr.Value, 0, len(u.Roles))
+	for _, r := range u.Roles {
+		elems = append(elems, types.StringValue(r.Name))
+	}
 
-    sv, _ := types.SetValue(types.StringType, elems)
-    return sv
+	sv, _ := types.SetValue(types.StringType, elems)
+	return sv
 }

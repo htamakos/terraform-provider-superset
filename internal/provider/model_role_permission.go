@@ -16,7 +16,7 @@ type rolePermissionBaseModel struct {
 }
 
 func (model *rolePermissionBaseModel) updateState(roleId int64, roleName string, permissions []client.SupersetRolePermissionApiGetList) {
-    model.RoleId = types.Int64Value(roleId)
+	model.RoleId = types.Int64Value(roleId)
 	model.RoleName = types.StringValue(roleName)
 	model.Permissions = model.flattenPermissionsToList(permissions)
 }
@@ -36,9 +36,30 @@ func (model *rolePermissionBaseModel) resolvePermissions(sourcePermissions []cli
 
 	permissionList := model.Permissions.Elements()
 	for _, p := range permissionList {
-		permissionObj := p.(types.Object)
-		permissionNameAttrValue := permissionObj.Attributes()["permission_name"].(types.String).ValueString()
-		viewMenuNameAttrValue := permissionObj.Attributes()["view_menu_name"].(types.String).ValueString()
+		permissionObj, ok := p.(types.Object)
+		if !ok || permissionObj.IsNull() {
+			panic("unexpected type of permission attribute value")
+		}
+
+		permissionNameAttr, exists := permissionObj.Attributes()["permission_name"]
+		if !exists {
+			panic("permission_name attribute is missing in permission object")
+		}
+		_permissionNameAttrValue, ok := permissionNameAttr.(types.String)
+		if !ok || _permissionNameAttrValue.IsNull() {
+			panic("unexpected type of permission_name attribute value")
+		}
+		permissionNameAttrValue := _permissionNameAttrValue.ValueString()
+		viewMenuNameAttr, exists := permissionObj.Attributes()["view_menu_name"]
+		if !exists {
+			panic("view_menu_name attribute is missing in permission object")
+		}
+		_viewMenuNameAttrValue, ok := viewMenuNameAttr.(types.String)
+		if !ok || _viewMenuNameAttrValue.IsNull() {
+			panic("unexpected type of view_menu_name attribute value")
+		}
+
+		viewMenuNameAttrValue := _viewMenuNameAttrValue.ValueString()
 		fullPermissionName := permissionNameAttrValue + "_" + viewMenuNameAttrValue
 		sourcePermissionId, exists := sourcePermissionNameIdMap[fullPermissionName]
 		if !exists {
