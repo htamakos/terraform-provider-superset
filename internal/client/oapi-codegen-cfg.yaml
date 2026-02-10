@@ -1,0 +1,18 @@
+# Copyright (c) Hironori Tamakoshi <tmkshrnr@gmail.com>
+# SPDX-License-Identifier: MPL-2.0
+
+package: client
+generate:
+  models: true
+  client: true
+output: client.gen.go
+output-options:
+  prefer-skip-optional-pointer: true
+  nullable-type: true
+  include-tags:
+    - Security
+    - Security Roles
+    - Security Users
+    - Security Groups
+    - Security Permissions on Resources (View Menus)
+    - Database
