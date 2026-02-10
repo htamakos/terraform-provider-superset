@@ -1,4 +1,4 @@
-// Copyright (c) Hironori Tamakoshi <tmkshrnr@gmail.com>
+// Copyright Hironori Tamakoshi <tmkshrnr@gmail.com> 2026
 // SPDX-License-Identifier: MPL-2.0
 
 package client
@@ -86,6 +86,9 @@ func NewClientWrapper(ctx context.Context, serverBaseUrl string, credentials Cli
 		req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", accessToken))
 		return nil
 	}))
+	if err != nil {
+		return nil, err
+	}
 
 	clientOptions := &ClientOptions{
 		PageSize: DefaultPageSize,
@@ -226,9 +229,9 @@ func (cw *ClientWrapper) GetUser(ctx context.Context, userID int) (*SupersetUser
 		return nil, fmt.Errorf("failed to get user, status code: %d, body: %s", res.StatusCode(), string(res.Body))
 	}
 
-    if res.StatusCode() == http.StatusNotFound {
-        return nil, &NotFoundError{Resource: "User", ID: userID}
-    }
+	if res.StatusCode() == http.StatusNotFound {
+		return nil, &NotFoundError{Resource: "User", ID: userID}
+	}
 
 	return &res.JSON200.Result, nil
 }
@@ -236,7 +239,10 @@ func (cw *ClientWrapper) GetUser(ctx context.Context, userID int) (*SupersetUser
 // FindUser finds a user by username.
 func (cw *ClientWrapper) FindUser(ctx context.Context, userName string) (*SupersetUserApiGetList, error) {
 	var v GetListSchema_Filters_Value
-	v.FromGetListSchemaFiltersValue1(GetListSchemaFiltersValue1(userName))
+	err := v.FromGetListSchemaFiltersValue1(userName)
+	if err != nil {
+		return nil, err
+	}
 
 	res, err := cw.GetApiV1SecurityUsersWithResponse(ctx, &GetApiV1SecurityUsersParams{
 		Q: GetListSchema{
@@ -254,16 +260,16 @@ func (cw *ClientWrapper) FindUser(ctx context.Context, userName string) (*Supers
 		return nil, err
 	}
 
-    if res.StatusCode() == http.StatusNotFound {
-        return nil, &NotFoundError{Resource: "User", ID: userName}
-    }
+	if res.StatusCode() == http.StatusNotFound {
+		return nil, &NotFoundError{Resource: "User", ID: userName}
+	}
 
 	if res.StatusCode() != http.StatusOK {
 		return nil, fmt.Errorf("failed to find user, status code: %d, body: %s", res.StatusCode(), string(res.Body))
 	}
 
 	if len(res.JSON200.Result) == 0 {
-        return nil, &NotFoundError{Resource: "User", ID: userName}
+		return nil, &NotFoundError{Resource: "User", ID: userName}
 	}
 
 	return &res.JSON200.Result[0], nil
@@ -291,7 +297,7 @@ func (cw *ClientWrapper) DeleteUser(ctx context.Context, userID int) error {
 
 // UpdateUser updates the user with the given userID using the provided user data.
 func (cw *ClientWrapper) UpdateUser(ctx context.Context, userID int, user SupersetUserApiPut) (*SupersetUserApiGet, error) {
-    fmt.Printf("Updating user ID %d with data: %+v\n", userID, user)
+	fmt.Printf("Updating user ID %d with data: %+v\n", userID, user)
 	res, err := cw.PutApiV1SecurityUsersPk(ctx, userID, user)
 	if err != nil {
 		return nil, err
@@ -360,7 +366,10 @@ func (cw *ClientWrapper) _ListRoles(ctx context.Context, pageNumber int) ([]Supe
 // FindRole finds a role by role name.
 func (cw *ClientWrapper) FindRole(ctx context.Context, roleName string) (*SupersetRoleApiGetList, error) {
 	var v GetListSchema_Filters_Value
-	v.FromGetListSchemaFiltersValue1(GetListSchemaFiltersValue1(roleName))
+	err := v.FromGetListSchemaFiltersValue1(roleName)
+	if err != nil {
+		return nil, err
+	}
 
 	res, err := cw.GetApiV1SecurityRolesWithResponse(ctx, &GetApiV1SecurityRolesParams{
 		Q: GetListSchema{
@@ -378,16 +387,16 @@ func (cw *ClientWrapper) FindRole(ctx context.Context, roleName string) (*Supers
 		return nil, err
 	}
 
-    if res.StatusCode() == http.StatusNotFound {
-        return nil, &NotFoundError{Resource: "Role", ID: roleName}
-    }
+	if res.StatusCode() == http.StatusNotFound {
+		return nil, &NotFoundError{Resource: "Role", ID: roleName}
+	}
 
 	if res.StatusCode() != http.StatusOK {
 		return nil, fmt.Errorf("failed to find role, status code: %d, body: %s", res.StatusCode(), string(res.Body))
 	}
 
 	if len(res.JSON200.Result) == 0 {
-        return nil, &NotFoundError{Resource: "Role", ID: roleName}
+		return nil, &NotFoundError{Resource: "Role", ID: roleName}
 	}
 
 	return &res.JSON200.Result[0], nil
@@ -432,9 +441,9 @@ func (cw *ClientWrapper) GetRole(ctx context.Context, roleID int) (*SupersetRole
 		return nil, err
 	}
 
-    if res.StatusCode() == http.StatusNotFound {
-        return nil, &NotFoundError{Resource: "Role", ID: roleID}
-    }
+	if res.StatusCode() == http.StatusNotFound {
+		return nil, &NotFoundError{Resource: "Role", ID: roleID}
+	}
 
 	if res.StatusCode() != http.StatusOK {
 		return nil, fmt.Errorf("failed to get role, status code: %d, body: %s", res.StatusCode(), string(res.Body))
@@ -481,14 +490,14 @@ func (cw *ClientWrapper) UpdateRole(ctx context.Context, roleID int, role Supers
 		return nil, fmt.Errorf("failed to update role, status code: %d, body: %s", res.StatusCode, string(msg))
 	}
 
-    roleRes, err := cw.GetApiV1SecurityRolesPkWithResponse(ctx, roleID, nil)
-    if err != nil {
-        return nil, fmt.Errorf("failed to get updated role: %w", err)
-    }
+	roleRes, err := cw.GetApiV1SecurityRolesPkWithResponse(ctx, roleID, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get updated role: %w", err)
+	}
 
-    if roleRes.StatusCode() != http.StatusOK {
-        return nil, fmt.Errorf("failed to get role, status code: %d, body: %s", roleRes.StatusCode(), string(roleRes.Body))
-    }
+	if roleRes.StatusCode() != http.StatusOK {
+		return nil, fmt.Errorf("failed to get role, status code: %d, body: %s", roleRes.StatusCode(), string(roleRes.Body))
+	}
 
 	return &roleRes.JSON200.Result, nil
 }
@@ -539,9 +548,9 @@ func (cw *ClientWrapper) GetGroup(ctx context.Context, groupID int) (*SupersetGr
 		return nil, err
 	}
 
-    if res.StatusCode() == http.StatusNotFound {
-        return nil, &NotFoundError{Resource: "Group", ID: groupID}
-    }
+	if res.StatusCode() == http.StatusNotFound {
+		return nil, &NotFoundError{Resource: "Group", ID: groupID}
+	}
 
 	if res.StatusCode() != http.StatusOK {
 		return nil, fmt.Errorf("failed to get group, status code: %d, body: %s", res.StatusCode(), string(res.Body))
@@ -552,7 +561,10 @@ func (cw *ClientWrapper) GetGroup(ctx context.Context, groupID int) (*SupersetGr
 // FindGroup finds a group by group name.
 func (cw *ClientWrapper) FindGroup(ctx context.Context, groupName string) (*SupersetGroupApiGetList, error) {
 	var v GetListSchema_Filters_Value
-	v.FromGetListSchemaFiltersValue1(GetListSchemaFiltersValue1(groupName))
+	err := v.FromGetListSchemaFiltersValue1(groupName)
+	if err != nil {
+		return nil, err
+	}
 
 	res, err := cw.GetApiV1SecurityGroupsWithResponse(ctx, &GetApiV1SecurityGroupsParams{
 		Q: GetListSchema{
@@ -570,16 +582,16 @@ func (cw *ClientWrapper) FindGroup(ctx context.Context, groupName string) (*Supe
 		return nil, err
 	}
 
-    if res.StatusCode() == http.StatusNotFound {
-        return nil, &NotFoundError{Resource: "Group", ID: groupName}
-    }
+	if res.StatusCode() == http.StatusNotFound {
+		return nil, &NotFoundError{Resource: "Group", ID: groupName}
+	}
 
 	if res.StatusCode() != http.StatusOK {
 		return nil, fmt.Errorf("failed to find group, status code: %d, body: %s", res.StatusCode(), string(res.Body))
 	}
 
 	if len(res.JSON200.Result) == 0 {
-        return nil, &NotFoundError{Resource: "Group", ID: groupName}
+		return nil, &NotFoundError{Resource: "Group", ID: groupName}
 	}
 
 	return &res.JSON200.Result[0], nil
@@ -660,19 +672,18 @@ func (cw *ClientWrapper) UpdateGroup(ctx context.Context, groupID int, group Sup
 
 		return nil, fmt.Errorf("failed to update group, status code: %d, body: %s", res.StatusCode, string(msg))
 	}
-    groupRes, err := cw.GetApiV1SecurityGroupsPkWithResponse(ctx, groupID, nil)
-    if err != nil {
-        return nil, fmt.Errorf("failed to get updated group: %w", err)
-    }
+	groupRes, err := cw.GetApiV1SecurityGroupsPkWithResponse(ctx, groupID, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get updated group: %w", err)
+	}
 
-    if groupRes.StatusCode() != http.StatusOK {
-        return nil, fmt.Errorf("failed to get group, status code: %d, body: %s", groupRes.StatusCode(), string(groupRes.Body))
-    }
+	if groupRes.StatusCode() != http.StatusOK {
+		return nil, fmt.Errorf("failed to get group, status code: %d, body: %s", groupRes.StatusCode(), string(groupRes.Body))
+	}
 
 	return &groupRes.JSON200.Result, nil
 }
 
-// Permissions
 type SupersetPermissionApiGetList = PermissionViewMenuApiGetList
 
 // ListPermissions retrieves the list of permissions.
@@ -687,7 +698,7 @@ func (cw *ClientWrapper) ListPermissions(ctx context.Context) ([]SupersetPermiss
 
 		allPermissions = append(allPermissions, permissions...)
 
-		if len(permissions) == 0  {
+		if len(permissions) == 0 {
 			break
 		}
 		pageNumber++
@@ -724,17 +735,17 @@ func (cw *ClientWrapper) ListRolePermissions(ctx context.Context, roleId int) ([
 		return nil, err
 	}
 
-    if res.StatusCode() == http.StatusNotFound {
-        return nil, &NotFoundError{Resource: "Role", ID: roleId}
-    }
+	if res.StatusCode() == http.StatusNotFound {
+		return nil, &NotFoundError{Resource: "Role", ID: roleId}
+	}
 
 	if res.StatusCode() != http.StatusOK {
 		return nil, fmt.Errorf("failed to get permissions, status code: %d, body: %s", res.StatusCode(), string(res.Body))
 	}
 
-    if len(res.JSON200.Result) == 0 {
-        return nil, &NotFoundError{Resource: "Role Permissions", ID: roleId}
-    }
+	if len(res.JSON200.Result) == 0 {
+		return nil, &NotFoundError{Resource: "Role Permissions", ID: roleId}
+	}
 
 	return res.JSON200.Result, nil
 }
@@ -813,7 +824,6 @@ func (cw *ClientWrapper) AssignUsersToRole(ctx context.Context, roleId int, user
 	return nil
 }
 
-// Databases
 type SupersetDatabaseApiGetList = DatabaseRestApiGetList
 
 func (cw *ClientWrapper) ListDatabases(ctx context.Context) ([]SupersetDatabaseApiGetList, error) {
@@ -856,7 +866,10 @@ type SupersetDatabaseApiGet = SupersetDatabaseApiGetList
 // FindDatabase finds a database by database name.
 func (cw *ClientWrapper) FindDatabase(ctx context.Context, databaseName string) (*SupersetDatabaseApiGetList, error) {
 	var v GetListSchema_Filters_Value
-	v.FromGetListSchemaFiltersValue1(GetListSchemaFiltersValue1(databaseName))
+	err := v.FromGetListSchemaFiltersValue1(databaseName)
+	if err != nil {
+		return nil, err
+	}
 
 	res, err := cw.GetApiV1DatabaseWithResponse(ctx, &GetApiV1DatabaseParams{
 		Q: GetListSchema{
@@ -910,10 +923,10 @@ func (cw *ClientWrapper) CreateDatabase(ctx context.Context, database SupersetDa
 		return nil, fmt.Errorf("failed to create database, status code: %d, body: %s", res.StatusCode, string(msg))
 	}
 
-    databaseRes, err := cw.FindDatabase(ctx, database.DatabaseName)
-    if err != nil {
-        return nil, err
-    }
+	databaseRes, err := cw.FindDatabase(ctx, database.DatabaseName)
+	if err != nil {
+		return nil, err
+	}
 
 	return databaseRes, nil
 }
@@ -921,7 +934,10 @@ func (cw *ClientWrapper) CreateDatabase(ctx context.Context, database SupersetDa
 // GetDatabase retrieves the database with the given databaseID.
 func (cw *ClientWrapper) GetDatabase(ctx context.Context, databaseID int) (*DatabaseRestApiGetList, error) {
 	var v GetListSchema_Filters_Value
-    v.FromGetListSchemaFiltersValue0(GetListSchemaFiltersValue0(databaseID))
+	err := v.FromGetListSchemaFiltersValue0(GetListSchemaFiltersValue0(databaseID))
+	if err != nil {
+		return nil, err
+	}
 
 	res, err := cw.GetApiV1DatabaseWithResponse(ctx, &GetApiV1DatabaseParams{
 		Q: GetListSchema{

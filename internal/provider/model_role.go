@@ -1,4 +1,4 @@
-// Copyright (c) Hironori Tamakoshi <tmkshrnr@gmail.com>
+// Copyright Hironori Tamakoshi <tmkshrnr@gmail.com> 2026
 // SPDX-License-Identifier: MPL-2.0
 
 package provider
@@ -14,6 +14,6 @@ type roleBaseModel struct {
 }
 
 func (model *roleBaseModel) updateState(r *client.SupersetRoleApiGet) {
-    model.Id = types.Int64Value(int64(r.Id))
-    model.Name = types.StringValue(r.Name)
+	model.Id = types.Int64Value(int64(r.Id))
+	model.Name = types.StringValue(r.Name)
 }

@@ -1,4 +1,4 @@
-// Copyright (c) Hironori Tamakoshi <tmkshrnr@gmail.com>
+// Copyright Hironori Tamakoshi <tmkshrnr@gmail.com> 2026
 // SPDX-License-Identifier: MPL-2.0
 
 package provider
@@ -13,7 +13,7 @@ import (
 )
 
 const (
-    Timeout1Min   = 1 * time.Minute
+	Timeout1Min   = 1 * time.Minute
 	Timeout5min   = 5 * time.Minute
 	Timeout20min  = 20 * time.Minute
 	Timeout60min  = 60 * time.Minute

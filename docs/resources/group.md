@@ -13,7 +13,7 @@ Manage a superset group
 ## Example Usage
 
 ```terraform
-resource "superset_group_role" "example" {
+resource "superset_group" "example" {
   name = "Group1"
 }
 ```
@@ -33,8 +33,6 @@ resource "superset_group_role" "example" {
 ### Read-Only
 
 - `id` (Number) The ID of the group.
-- `roles` (Attributes List) (see [below for nested schema](#nestedatt--roles))
-- `users` (Attributes List) (see [below for nested schema](#nestedatt--users))
 
 <a id="nestedatt--timeouts"></a>
 ### Nested Schema for `timeouts`
@@ -44,27 +42,6 @@ Optional:
 - `create` (String) A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
 - `delete` (String) A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Setting a timeout for a Delete operation is only applicable if changes are saved into state before the destroy operation occurs.
 - `update` (String) A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
-
-
-<a id="nestedatt--roles"></a>
-### Nested Schema for `roles`
-
-Optional:
-
-- `name` (String) The name of the role.
-
-Read-Only:
-
-- `id` (Number) The ID of the role.
-
-
-<a id="nestedatt--users"></a>
-### Nested Schema for `users`
-
-Read-Only:
-
-- `id` (Number) The ID of the user.
-- `username` (String) The name of the user.
 
 ## Import
 

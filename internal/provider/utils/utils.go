@@ -1,11 +1,11 @@
-// Copyright (c) Hironori Tamakoshi <tmkshrnr@gmail.com>
+// Copyright Hironori Tamakoshi <tmkshrnr@gmail.com> 2026
 // SPDX-License-Identifier: MPL-2.0
 
 package utils
 
 import (
+	"context"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-    "context"
 )
 
 func StringsToTlist(values []string) types.List {

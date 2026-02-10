@@ -1,4 +1,4 @@
-// Copyright (c) Hironori Tamakoshi <tmkshrnr@gmail.com>
+// Copyright Hironori Tamakoshi <tmkshrnr@gmail.com> 2026
 // SPDX-License-Identifier: MPL-2.0
 
 package provider
@@ -12,11 +12,6 @@ type groupBaseModel struct {
 	Id    types.Int64  `tfsdk:"id"`
 	Label types.String `tfsdk:"label"`
 	Name  types.String `tfsdk:"name"`
-}
-
-type groupUserModel struct {
-	Id       types.Int64  `tfsdk:"id"`
-	Username types.String `tfsdk:"username"`
 }
 
 func (model *groupBaseModel) updateState(g *client.SupersetGroupApiGet) {

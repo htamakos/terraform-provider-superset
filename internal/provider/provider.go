@@ -1,4 +1,4 @@
-// Copyright (c) Hironori Tamakoshi <tmkshrnr@gmail.com>
+// Copyright Hironori Tamakoshi <tmkshrnr@gmail.com> 2026
 // SPDX-License-Identifier: MPL-2.0
 
 package provider
@@ -154,17 +154,16 @@ func (p *SupersetProvider) Configure(ctx context.Context, req provider.Configure
 
 func (p *SupersetProvider) Resources(ctx context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
-        NewUserResource,
-        NewRoleResource,
-        NewRolePermissionsResource,
-        NewGroupResource,
-        NewGroupRoleBindingResource,
+		NewUserResource,
+		NewRoleResource,
+		NewRolePermissionsResource,
+		NewGroupResource,
+		NewGroupRoleBindingResource,
 	}
 }
 
 func (p *SupersetProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
-	return []func() datasource.DataSource{
-	}
+	return []func() datasource.DataSource{}
 }
 
 func New(version string) func() provider.Provider {

@@ -1,4 +1,4 @@
-// Copyright (c) Hironori Tamakoshi <tmkshrnr@gmail.com>
+// Copyright Hironori Tamakoshi <tmkshrnr@gmail.com> 2026
 // SPDX-License-Identifier: MPL-2.0
 
 package provider
@@ -90,7 +90,7 @@ func (r *UserResource) Schema(ctx context.Context, req resource.SchemaRequest, r
 				PlanModifiers: []planmodifier.Set{
 					setplanmodifier.UseStateForUnknown(),
 				},
-                MarkdownDescription: "Role names to assign to the user.",
+				MarkdownDescription: "Role names to assign to the user.",
 			},
 			"group_names": schema.SetAttribute{
 				Optional:    true,
@@ -185,15 +185,15 @@ func (r *UserResource) Create(ctx context.Context, req resource.CreateRequest, r
 		postData.Groups = groupIds
 	}
 
-    existingUser, err := r.client.FindUser(ctx, postData.Username)
-    if !client.IsNotFound(err) && err != nil {
-        resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to validate user name uniqueness: %s", err))
-        return
-    }
-    if existingUser != nil {
-        resp.Diagnostics.AddError("Client Error", fmt.Sprintf("A user with username '%s' already exists with ID %d", postData.Username, existingUser.Id))
-        return
-    }
+	existingUser, err := r.client.FindUser(ctx, postData.Username)
+	if !client.IsNotFound(err) && err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to validate user name uniqueness: %s", err))
+		return
+	}
+	if existingUser != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("A user with username '%s' already exists with ID %d", postData.Username, existingUser.Id))
+		return
+	}
 
 	u, err := r.client.CreateUser(ctx, postData)
 
@@ -201,11 +201,11 @@ func (r *UserResource) Create(ctx context.Context, req resource.CreateRequest, r
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create user, got error: %s", err))
 		return
 	}
-    var password *string
-    if !data.Password.IsNull() {
-        passwordValue := data.Password.ValueString()
-        password = &passwordValue
-    }
+	var password *string
+	if !data.Password.IsNull() {
+		passwordValue := data.Password.ValueString()
+		password = &passwordValue
+	}
 
 	data.updateState(u, password)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
@@ -225,18 +225,18 @@ func (r *UserResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 
 	u, err := r.client.GetUser(ctx, int(state.Id.ValueInt64()))
 	if client.IsNotFound(err) {
-        resp.State.RemoveResource(ctx)
-        return
-    } else if err != nil {
+		resp.State.RemoveResource(ctx)
+		return
+	} else if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read user with ID %d: %s", state.Id.ValueInt64(), err))
 		return
 	}
 
-    var password *string = nil
-    if !state.Password.IsNull() {
-        passwordValue := state.Password.ValueString()
-        password = &passwordValue
-    }
+	var password *string = nil
+	if !state.Password.IsNull() {
+		passwordValue := state.Password.ValueString()
+		password = &passwordValue
+	}
 
 	state.updateState(u, password)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -259,7 +259,7 @@ func (r *UserResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		Email:     plan.Email.ValueString(),
 		FirstName: plan.FirstName.ValueString(),
 		LastName:  plan.LastName.ValueString(),
-        Password:  plan.Password.ValueString(),
+		Password:  plan.Password.ValueString(),
 		Active:    plan.Active.ValueBool(),
 	}
 
@@ -302,11 +302,11 @@ func (r *UserResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		return
 	}
 
-    var password *string
-    if !plan.Password.IsNull() {
-        passwordValue := plan.Password.ValueString()
-        password = &passwordValue
-    }
+	var password *string
+	if !plan.Password.IsNull() {
+		passwordValue := plan.Password.ValueString()
+		password = &passwordValue
+	}
 
 	state.updateState(u, password)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -326,7 +326,7 @@ func (r *UserResource) Delete(ctx context.Context, req resource.DeleteRequest, r
 
 		_, err = r.client.UpdateUser(ctx, int(state.Id.ValueInt64()), client.SupersetUserApiPut{
 			Active: false,
-            Groups: []int{},
+			Groups: []int{},
 		})
 
 		if err != nil {
