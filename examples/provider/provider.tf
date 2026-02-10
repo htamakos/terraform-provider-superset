@@ -1,6 +1,6 @@
 terraform {
   required_providers {
-    sakura = {
+    superset = {
       source = "htamakos/superset"
 
       version = "0.0.0"
