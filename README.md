@@ -1,64 +1,153 @@
-# Terraform Provider Scaffolding (Terraform Plugin Framework)
+# terraform-provider-superset
 
-_This template repository is built on the [Terraform Plugin Framework](https://github.com/hashicorp/terraform-plugin-framework). The template repository built on the [Terraform Plugin SDK](https://github.com/hashicorp/terraform-plugin-sdk) can be found at [terraform-provider-scaffolding](https://github.com/hashicorp/terraform-provider-scaffolding). See [Which SDK Should I Use?](https://developer.hashicorp.com/terraform/plugin/framework-benefits) in the Terraform documentation for additional information._
+Terraform Provider for **Apache Superset**
 
-This repository is a *template* for a [Terraform](https://www.terraform.io) provider. It is intended as a starting point for creating Terraform providers, containing:
+This Terraform provider enables you to manage Apache Superset resources declaratively via Terraform configurations.  
+It extends Terraform with Superset-specific resources and data sources so that dashboards, roles, users, and other Superset objects can be created, updated, and deleted through Terraform workflows.
 
-- A resource and a data source (`internal/provider/`),
-- Examples (`examples/`) and generated documentation (`docs/`),
-- Miscellaneous meta files.
+---
 
-These files contain boilerplate code that you will need to edit to create your own Terraform provider. Tutorials for creating Terraform providers can be found on the [HashiCorp Developer](https://developer.hashicorp.com/terraform/tutorials/providers-plugin-framework) platform. _Terraform Plugin Framework specific guides are titled accordingly._
+## 🚀 Features
 
-Please see the [GitHub template repository documentation](https://help.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-repository-from-a-template) for how to create a new repository from this template on GitHub.
+This provider integrates Terraform with the Apache Superset REST API and currently supports:
 
-Once you've written your provider, you'll want to [publish it on the Terraform Registry](https://developer.hashicorp.com/terraform/registry/providers/publishing) so that others can use it.
+- Managing Superset roles
+- Managing Superset users
+- Managing Superset groups
+- Managing Superset role permissions
+- Managing Superset group role assignments
+- (Add other supported resources here)
 
-## Requirements
+Resources can be imported into Terraform state where supported.
 
-- [Terraform](https://developer.hashicorp.com/terraform/downloads) >= 1.0
-- [Go](https://golang.org/doc/install) >= 1.24
+---
 
-## Building The Provider
+## 📦 Installation
 
-1. Clone the repository
-1. Enter the repository directory
-1. Build the provider using the Go `install` command:
+### Requirements
 
-```shell
+- Terraform CLI >= 1.0
+- Go >= 1.24 (for building the provider)
+- An accessible Apache Superset instance
+
+### Build from Source
+
+```bash
+git clone https://github.com/htamakos/terraform-provider-superset.git
+cd terraform-provider-superset
 go install
 ```
 
-## Adding Dependencies
+This installs the provider binary into your `$GOPATH/bin`.
 
-This provider uses [Go modules](https://github.com/golang/go/wiki/Modules).
-Please see the Go documentation for the most up to date information about using Go modules.
+---
 
-To add a new dependency `github.com/author/dependency` to your Terraform provider:
+## 🔌 Provider Configuration
 
-```shell
-go get github.com/author/dependency
-go mod tidy
+Configure the provider in your Terraform project:
+
+```hcl
+terraform {
+  required_providers {
+    superset = {
+      source  = "htamakos/superset"
+      version = "0.1.0"
+    }
+  }
+}
+
+provider "superset" {
+  host     = "https://superset.example.com"
+  username = "admin"
+  password = "super_secret"
+}
 ```
 
-Then commit the changes to `go.mod` and `go.sum`.
+### Provider Arguments
 
-## Using the provider
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `host` | string | yes | Base URL of the Superset instance |
+| `username` | string | yes | Superset login username |
+| `password` | string | yes | Superset login password (sensitive) |
 
-Fill this in for each provider
+Environment variable authentication may also be supported depending on configuration.
 
-## Developing the Provider
+---
 
-If you wish to work on the provider, you'll first need [Go](http://www.golang.org) installed on your machine (see [Requirements](#requirements) above).
+## 📘 Example Usage
 
-To compile the provider, run `go install`. This will build the provider and put the provider binary in the `$GOPATH/bin` directory.
+### Create a Superset Role
 
-To generate or update documentation, run `make generate`.
+```hcl
+resource "superset_role" "example" {
+  name        = "terraform_role"
+  permissions = [
+    "can_read",
+    "can_write"
+  ]
+}
+```
 
-In order to run the full suite of Acceptance tests, run `make testacc`.
+### Import an Existing Role
 
-*Note:* Acceptance tests create real resources, and often cost money to run.
+```bash
+terraform import superset_role.example 632
+```
 
-```shell
+---
+
+## 📚 Resources and Data Sources
+
+### Resources
+
+| Name | Description |
+|------|-------------|
+| `superset_role` | Manage Superset roles |
+| `superset_user` | Manage Superset users |
+| *(add additional resources here)* | |
+
+### Data Sources
+
+| Name | Description |
+|------|-------------|
+| `superset_roles` | Retrieve existing Superset roles |
+| `superset_users` | Retrieve existing Superset users |
+
+---
+
+## 🧪 Development
+
+### Local Development
+
+```bash
+go install
+```
+
+### Generate Documentation
+
+```bash
+make generate
+```
+
+### Run Acceptance Tests
+
+```bash
 make testacc
 ```
+
+⚠️ Acceptance tests require a running Superset instance and will perform real API operations.
+
+---
+
+## 📄 License
+
+This project is licensed under the **Mozilla Public License 2.0 (MPL-2.0)**.
+
+---
+
+## 🤝 Contributing
+
+Issues and pull requests are welcome.  
+Please ensure new resources and changes include appropriate documentation and tests.
+
