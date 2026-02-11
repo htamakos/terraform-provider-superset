@@ -1221,3 +1221,187 @@ func (cw *ClientWrapper) FindTag(ctx context.Context, tagName string) (*TagRestA
 
 	return &res.JSON200.Result[0], nil
 }
+
+// CreateDataset creates a new dataset with the given dataset data.
+func (cw *ClientWrapper) CreateDataset(ctx context.Context, dataset DatasetRestApiPost) (*DatasetRestApiGet, error) {
+	reqEditor, err := cw.createCsrfTokenRequestEditor()
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := cw.PostApiV1Dataset(ctx, dataset, reqEditor)
+	if err != nil {
+		return nil, err
+	}
+
+	if res.StatusCode != http.StatusCreated {
+		defer func() { res.Body.Close() }()
+		readBody, err := io.ReadAll(res.Body)
+		if err != nil {
+			return nil, fmt.Errorf("failed to read response body: %w", err)
+		}
+
+		return nil, fmt.Errorf("failed to create dataset, status code: %d, body: %s", res.StatusCode, string(readBody))
+	}
+
+	resParsed, err := ParsePostApiV1DatasetResponse(res)
+	if err != nil {
+		return nil, err
+	}
+
+	createdDatasetRes, err := cw.GetDataset(ctx, resParsed.JSON201.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	return createdDatasetRes, nil
+}
+
+// ListDatasets retrieves the list of datasets.
+func (cw *ClientWrapper) ListDatasets(ctx context.Context) ([]DatasetRestApiGetList, error) {
+	pageNumber := 0
+	var allDatasets []DatasetRestApiGetList
+	for {
+		datasets, err := cw._ListDatasets(ctx, pageNumber)
+		if err != nil {
+			return nil, err
+		}
+		allDatasets = append(allDatasets, datasets...)
+		if len(datasets) < cw.pageSize {
+			break
+		}
+		pageNumber++
+	}
+	return allDatasets, nil
+}
+
+func (cw *ClientWrapper) _ListDatasets(ctx context.Context, pageNumber int) ([]DatasetRestApiGetList, error) {
+	res, err := cw.GetApiV1DatasetWithResponse(ctx, &GetApiV1DatasetParams{
+		Q: GetListSchema{
+			Page:     pageNumber,
+			PageSize: cw.pageSize,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if res.StatusCode() != http.StatusOK {
+		return nil, fmt.Errorf("failed to get datasets, status code: %d, body: %s", res.StatusCode(), string(res.Body))
+	}
+
+	return res.JSON200.Result, nil
+}
+
+// FindDataset finds a dataset by dataset name.
+func (cw *ClientWrapper) FindDataset(ctx context.Context, datasetName string) (*DatasetRestApiGetList, error) {
+	var v GetListSchema_Filters_Value
+	err := v.FromGetListSchemaFiltersValue1(datasetName)
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := cw.GetApiV1DatasetWithResponse(ctx, &GetApiV1DatasetParams{
+		Q: GetListSchema{
+			Filters: []struct {
+				Col   string                      `json:"col"`
+				Opr   string                      `json:"opr"`
+				Value GetListSchema_Filters_Value `json:"value"`
+			}{
+				{Col: "table_name", Opr: "eq", Value: v},
+			},
+		},
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	if res.StatusCode() != http.StatusOK {
+		return nil, fmt.Errorf("failed to find dataset, status code: %d, body: %s", res.StatusCode(), string(res.Body))
+	}
+
+	if len(res.JSON200.Result) == 0 {
+		return nil, &NotFoundError{Resource: "Dataset", ID: datasetName}
+	}
+
+	return &res.JSON200.Result[0], nil
+}
+
+// GetDataset retrieves the dataset with the given datasetID.
+func (cw *ClientWrapper) GetDataset(ctx context.Context, datasetID int) (*DatasetRestApiGet, error) {
+	res, err := cw.GetApiV1DatasetPkWithResponse(ctx, datasetID, nil)
+	if err != nil {
+		return nil, err
+	}
+	if res.StatusCode() == http.StatusNotFound {
+		return nil, &NotFoundError{Resource: "Dataset", ID: datasetID}
+	}
+	if res.StatusCode() != http.StatusOK {
+		return nil, fmt.Errorf("failed to get dataset, status code: %d, body: %s", res.StatusCode(), string(res.Body))
+	}
+
+	return &res.JSON200.Result, nil
+}
+
+// DeleteDataset deletes the dataset with the given datasetID.
+func (cw *ClientWrapper) DeleteDataset(ctx context.Context, datasetID int) error {
+	reqEditor, err := cw.createCsrfTokenRequestEditor()
+	if err != nil {
+		return err
+	}
+	res, err := cw.DeleteApiV1DatasetPk(ctx, datasetID, reqEditor)
+	if err != nil {
+		return err
+	}
+
+	if res.StatusCode != http.StatusOK {
+		defer func() { res.Body.Close() }()
+		msg, err := io.ReadAll(res.Body)
+
+		if err != nil {
+			return fmt.Errorf("failed to read response body: %w", err)
+		}
+
+		return fmt.Errorf("failed to delete dataset, status code: %d, body: %s", res.StatusCode, string(msg))
+	}
+	return nil
+}
+
+// UpdateDataset updates the dataset with the given datasetID using the provided dataset data.
+func (cw *ClientWrapper) UpdateDataset(ctx context.Context, datasetID int, dataset DatasetRestApiPut) (*DatasetRestApiGet, error) {
+	reqEditor, err := cw.createCsrfTokenRequestEditor()
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := cw.PutApiV1DatasetPk(
+		ctx,
+		datasetID,
+		&PutApiV1DatasetPkParams{},
+		dataset,
+		reqEditor,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if res.StatusCode != http.StatusOK {
+		defer func() { res.Body.Close() }()
+		msg, err := io.ReadAll(res.Body)
+
+		if err != nil {
+			return nil, fmt.Errorf("failed to read response body: %w", err)
+		}
+
+		return nil, fmt.Errorf("failed to update dataset, status code: %d, body: %s", res.StatusCode, string(msg))
+	}
+
+	updatedDatasetRes, err := cw.GetDataset(ctx, datasetID)
+	if err != nil {
+		return nil, err
+	}
+
+	return updatedDatasetRes, nil
+}

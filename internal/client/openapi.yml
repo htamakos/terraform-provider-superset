@@ -3965,7 +3965,9 @@ components:
         column_formats:
           readOnly: true
         columns:
-          $ref: '#/components/schemas/DatasetRestApi.get.TableColumn'
+          type: array
+          items:
+            $ref: '#/components/schemas/DatasetRestApi.get.TableColumn'
         created_by:
           $ref: '#/components/schemas/DatasetRestApi.get.User1'
         created_on:
@@ -4014,7 +4016,9 @@ components:
           nullable: true
           type: string
         metrics:
-          $ref: '#/components/schemas/DatasetRestApi.get.SqlMetric'
+          items:
+            $ref: '#/components/schemas/DatasetRestApi.get.SqlMetric'
+          type: array
         name:
           readOnly: true
         normalize_columns:
@@ -4026,7 +4030,9 @@ components:
         order_by_choices:
           readOnly: true
         owners:
-          $ref: '#/components/schemas/DatasetRestApi.get.User'
+          items:
+            $ref: '#/components/schemas/DatasetRestApi.get.User'
+          type: array
         schema:
           maxLength: 255
           nullable: true
@@ -4263,7 +4269,9 @@ components:
         kind:
           readOnly: true
         owners:
-          $ref: '#/components/schemas/DatasetRestApi.get_list.User1'
+          items:
+            $ref: '#/components/schemas/DatasetRestApi.get_list.User1'
+          type: array
         schema:
           maxLength: 255
           nullable: true
@@ -14021,7 +14029,7 @@ paths:
                   ids:
                     description: A list of item ids, useful when you don't know the column id
                     items:
-                      type: string
+                      type: integer
                     type: array
                   label_columns:
                     properties:
@@ -14079,7 +14087,7 @@ paths:
               schema:
                 properties:
                   id:
-                    type: number
+                    type: integer
                   result:
                     $ref: '#/components/schemas/DatasetRestApi.post'
                 type: object
@@ -14201,7 +14209,7 @@ paths:
               schema:
                 properties:
                   id:
-                    type: number
+                    type: integer
                   result:
                     $ref: '#/components/schemas/DatasetDuplicateSchema'
                 type: object
@@ -14466,7 +14474,7 @@ paths:
                 properties:
                   id:
                     description: The item id
-                    type: string
+                    type: integer
                   result:
                     $ref: '#/components/schemas/DatasetRestApi.get'
                 type: object
@@ -14509,7 +14517,7 @@ paths:
               schema:
                 properties:
                   id:
-                    type: number
+                    type: integer
                   result:
                     $ref: '#/components/schemas/DatasetRestApi.put'
                 type: object
