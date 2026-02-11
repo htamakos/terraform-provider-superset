@@ -19,7 +19,8 @@ var defaultLoginProvider = PostApiV1SecurityLoginJSONBodyProvider(defaultLoginPr
 // ClientWrapper wraps the generated ClientWithResponses to add authentication handling.
 type ClientWrapper struct {
 	*ClientWithResponses
-	pageSize int
+	pageSize      int
+	serverBaseUrl string
 }
 
 // accessToken represents an authentication access token.
@@ -100,6 +101,7 @@ func NewClientWrapper(ctx context.Context, serverBaseUrl string, credentials Cli
 	cw := &ClientWrapper{
 		client,
 		clientOptions.PageSize,
+		serverBaseUrl,
 	}
 
 	return cw, nil
@@ -126,11 +128,15 @@ func (cw *ClientWrapper) createCsrfTokenRequestEditor() (RequestEditorFn, error)
 	if err != nil {
 		return nil, err
 	}
+
+	csrf_token_url := fmt.Sprintf("%s/api/v1/security/csrf_token/", cw.serverBaseUrl)
+
 	return func(ctx context.Context, req *http.Request) error {
 		req.Header.Add("x-csrftoken", csrfToken)
 		for _, cookie := range cookies {
 			req.AddCookie(cookie)
 		}
+		req.Header.Add("Referer", csrf_token_url)
 		return nil
 	}, nil
 }
@@ -1040,4 +1046,178 @@ func (cw *ClientWrapper) ExecuteTestDatabaseConnection(ctx context.Context, body
 		return fmt.Errorf("failed to test database connection, status code: %d, body: %s", res.StatusCode, string(msg))
 	}
 	return nil
+}
+
+// CreateTag creates a new tag with the given tag data.
+func (cw *ClientWrapper) CreateTag(ctx context.Context, tag TagRestApiPost) (*TagRestApiGetList, error) {
+	reqEditor, err := cw.createCsrfTokenRequestEditor()
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := cw.PostApiV1TagWithResponse(ctx, tag, reqEditor)
+	if err != nil {
+		return nil, err
+	}
+
+	if res.StatusCode() != http.StatusCreated {
+		return nil, fmt.Errorf("failed to create tag, status code: %d, body: %s", res.StatusCode(), string(res.Body))
+	}
+
+	createdTagRes, err := cw.FindTag(ctx, tag.Name)
+	if err != nil {
+		return nil, err
+	}
+
+	return createdTagRes, nil
+}
+
+// ListTags retrieves the list of tags.
+func (cw *ClientWrapper) ListTags(ctx context.Context) ([]TagRestApiGetList, error) {
+	pageNumber := 0
+	var allTags []TagRestApiGetList
+	for {
+		tags, err := cw._ListTags(ctx, pageNumber)
+		if err != nil {
+			return nil, err
+		}
+		allTags = append(allTags, tags...)
+		if len(tags) < cw.pageSize {
+			break
+		}
+		pageNumber++
+	}
+	return allTags, nil
+}
+
+func (cw *ClientWrapper) _ListTags(ctx context.Context, pageNumber int) ([]TagRestApiGetList, error) {
+	res, err := cw.GetApiV1TagWithResponse(ctx, &GetApiV1TagParams{
+		Q: GetListSchema{
+			Page:     pageNumber,
+			PageSize: cw.pageSize,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if res.StatusCode() != http.StatusOK {
+		return nil, fmt.Errorf("failed to get tags, status code: %d, body: %s", res.StatusCode(), string(res.Body))
+	}
+
+	return res.JSON200.Result, nil
+}
+
+// GetTag retrieves the tag with the given tagID.
+func (cw *ClientWrapper) GetTag(ctx context.Context, tagID int) (*TagRestApiGet, error) {
+	res, err := cw.GetApiV1TagPkWithResponse(ctx, tagID, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if res.StatusCode() == http.StatusNotFound {
+		return nil, &NotFoundError{Resource: "Tag", ID: tagID}
+	}
+
+	if res.StatusCode() != http.StatusOK {
+		return nil, fmt.Errorf("failed to get tag, status code: %d, body: %s", res.StatusCode(), string(res.Body))
+	}
+	return &res.JSON200.Result, nil
+}
+
+// DeleteTag deletes the tag with the given tagID.
+func (cw *ClientWrapper) DeleteTag(ctx context.Context, tagID int) error {
+	reqEditor, err := cw.createCsrfTokenRequestEditor()
+	if err != nil {
+		return err
+	}
+	res, err := cw.DeleteApiV1TagPk(ctx, tagID, reqEditor)
+	if err != nil {
+		return err
+	}
+
+	if res.StatusCode != http.StatusOK {
+		defer func() { res.Body.Close() }()
+		msg, err := io.ReadAll(res.Body)
+
+		if err != nil {
+			return fmt.Errorf("failed to read response body: %w", err)
+		}
+
+		return fmt.Errorf("failed to delete tag, status code: %d, body: %s", res.StatusCode, string(msg))
+	}
+	return nil
+}
+
+// UpdateTag updates the tag with the given tagID using the provided tag data.
+func (cw *ClientWrapper) UpdateTag(ctx context.Context, tagID int, tag TagRestApiPut) (*TagRestApiGet, error) {
+	reqEditor, err := cw.createCsrfTokenRequestEditor()
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := cw.PutApiV1TagPk(ctx, tagID, tag, reqEditor)
+	if err != nil {
+		return nil, err
+	}
+
+	if res.StatusCode != http.StatusOK {
+		defer func() { res.Body.Close() }()
+		msg, err := io.ReadAll(res.Body)
+
+		if err != nil {
+			return nil, fmt.Errorf("failed to read response body: %w", err)
+		}
+
+		return nil, fmt.Errorf("failed to update tag, status code: %d, body: %s", res.StatusCode, string(msg))
+	}
+	tagRes, err := cw.GetApiV1TagPkWithResponse(ctx, tagID, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get updated tag: %w", err)
+	}
+
+	if tagRes.StatusCode() != http.StatusOK {
+		return nil, fmt.Errorf("failed to get tag, status code: %d, body: %s", tagRes.StatusCode(), string(tagRes.Body))
+	}
+
+	return &tagRes.JSON200.Result, nil
+}
+
+// FindTag finds a tag by tag name.
+func (cw *ClientWrapper) FindTag(ctx context.Context, tagName string) (*TagRestApiGetList, error) {
+	var v GetListSchema_Filters_Value
+	err := v.FromGetListSchemaFiltersValue1(tagName)
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := cw.GetApiV1TagWithResponse(ctx, &GetApiV1TagParams{
+		Q: GetListSchema{
+			Filters: []struct {
+				Col   string                      `json:"col"`
+				Opr   string                      `json:"opr"`
+				Value GetListSchema_Filters_Value `json:"value"`
+			}{
+				{Col: "name", Opr: "eq", Value: v},
+			},
+		},
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	if res.StatusCode() == http.StatusNotFound {
+		return nil, &NotFoundError{Resource: "Tag", ID: tagName}
+	}
+
+	if res.StatusCode() != http.StatusOK {
+		return nil, fmt.Errorf("failed to find tag, status code: %d, body: %s", res.StatusCode(), string(res.Body))
+	}
+
+	if len(res.JSON200.Result) == 0 {
+		return nil, &NotFoundError{Resource: "Tag", ID: tagName}
+	}
+
+	return &res.JSON200.Result[0], nil
 }

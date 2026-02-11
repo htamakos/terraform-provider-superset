@@ -8,6 +8,8 @@ import (
 	"os"
 	"strings"
 	"testing"
+
+	"github.com/oapi-codegen/nullable"
 )
 
 var (
@@ -18,7 +20,7 @@ var (
 
 func skipIfNoClientTest(t *testing.T) {
 	if os.Getenv("EXECUTE_CLIENT_TEST") != "1" {
-		t.Skip("Skipping client tests. Set CLIENT_TEST=1 to run them.")
+		t.Skip("Skipping client tests. Set EXECUTE_CLIENT_TEST=1 to run them.")
 	}
 }
 
@@ -328,5 +330,62 @@ func TestDatabaseApis(t *testing.T) {
 	err = client.DeleteDatabase(ctx, database.Id)
 	if err != nil {
 		t.Fatalf("failed to delete database: %v", err)
+	}
+}
+
+func TestTagApis(t *testing.T) {
+	skipIfNoClientTest(t)
+
+	ctx := context.Background()
+	client, err := NewClientWrapper(ctx, testServerBaseUrl, ClientCredentials{Username: testServerUser, Password: testServerPassword})
+	if err != nil {
+		t.Fatalf("failed to create client: %v", err)
+	}
+
+	tag, err := client.CreateTag(ctx, TagRestApiPost{
+		Name:        "testtag",
+		Description: nullable.NewNullableWithValue("This is a test tag"),
+	})
+	if err != nil {
+		t.Fatalf("failed to create tag: %v", err)
+	}
+
+	if tag.Name != "testtag" {
+		t.Fatalf("unexpected tag name: %v", tag.Name)
+	}
+
+	foundTag, err := client.FindTag(ctx, "testtag")
+	if err != nil {
+		t.Fatalf("failed to find tag: %v", err)
+	}
+
+	if foundTag.Id != tag.Id {
+		t.Fatalf("found tag ID does not match created tag ID")
+	}
+
+	ltags, err := client.ListTags(ctx)
+	if err != nil {
+		t.Fatalf("failed to list tags: %v", err)
+	}
+
+	if len(ltags) == 0 {
+		t.Fatalf("expected at least one tag, got zero")
+	}
+
+	updatedTag, err := client.UpdateTag(ctx, tag.Id, TagRestApiPut{
+		Name:        "testtag",
+		Description: nullable.NewNullableWithValue("Updated description"),
+	})
+	if err != nil {
+		t.Fatalf("failed to update tag: %v", err)
+	}
+
+	if updatedTag.Description.IsNull() || updatedTag.Description.MustGet() != "Updated description" {
+		t.Fatalf("unexpected tag description after update: %v", updatedTag.Description)
+	}
+
+	err = client.DeleteTag(ctx, tag.Id)
+	if err != nil {
+		t.Fatalf("failed to delete tag: %v", err)
 	}
 }
