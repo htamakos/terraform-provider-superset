@@ -389,3 +389,83 @@ func TestTagApis(t *testing.T) {
 		t.Fatalf("failed to delete tag: %v", err)
 	}
 }
+
+func TestDatasetApis(t *testing.T) {
+	skipIfNoClientTest(t)
+
+	ctx := context.Background()
+	client, err := NewClientWrapper(ctx, testServerBaseUrl, ClientCredentials{Username: testServerUser, Password: testServerPassword})
+	if err != nil {
+		t.Fatalf("failed to create client: %v", err)
+	}
+
+	database, err := client.CreateDatabase(ctx, DatabaseRestApiPost{
+		AllowCtas:      false,
+		AllowDml:       false,
+		DatabaseName:   "test_database_for_dataset",
+		ExposeInSqllab: true,
+		SqlalchemyUri:  "postgresql+psycopg2://superset:superset@db:5432/superset",
+	})
+	if err != nil {
+		t.Fatalf("failed to create database for dataset: %v", err)
+	}
+
+	dataset, err := client.CreateDataset(ctx, DatasetRestApiPost{
+		Database:  database.Id,
+		Schema:    nullable.NewNullableWithValue("information_schema"),
+		TableName: "tables",
+	})
+	if err != nil {
+		t.Fatalf("failed to create dataset: %v", err)
+	}
+
+	if dataset.TableName != "tables" {
+		t.Fatalf("unexpected dataset table name: %v", dataset.TableName)
+	}
+
+	datasets, err := client.ListDatasets(ctx)
+	if err != nil {
+		t.Fatalf("failed to list datasets: %v", err)
+	}
+
+	if len(datasets) == 0 {
+		t.Fatalf("expected at least one dataset, got zero")
+	}
+
+	datasetFound, err := client.FindDataset(ctx, "tables")
+	if err != nil {
+		t.Fatalf("failed to find dataset: %v", err)
+	}
+
+	if datasetFound.Id != dataset.Id {
+		t.Fatalf("found dataset ID does not match created dataset ID")
+	}
+	if datasetFound.TableName != dataset.TableName {
+		t.Fatalf("found dataset TableName does not match created dataset TableName")
+	}
+
+	datasetUpdated, err := client.UpdateDataset(ctx, dataset.Id, DatasetRestApiPut{
+		NormalizeColumns:     nullable.NewNullableWithValue(true),
+		AlwaysFilterMainDttm: true,
+	})
+	if err != nil {
+		t.Fatalf("failed to update dataset: %v", err)
+	}
+
+	if datasetUpdated.NormalizeColumns.IsNull() || !datasetUpdated.NormalizeColumns.MustGet() {
+		t.Fatalf("unexpected dataset NormalizeColumns after update: %v", datasetUpdated.NormalizeColumns)
+	}
+	if datasetUpdated.AlwaysFilterMainDttm.IsNull() || !datasetUpdated.AlwaysFilterMainDttm.MustGet() {
+		t.Fatalf("unexpected dataset AlwaysFilterMainDttm after update: %v", datasetUpdated.AlwaysFilterMainDttm)
+	}
+
+	err = client.DeleteDataset(ctx, dataset.Id)
+	if err != nil {
+		t.Fatalf("failed to delete dataset: %v", err)
+	}
+
+	err = client.DeleteDatabase(ctx, database.Id)
+	if err != nil {
+		t.Fatalf("failed to delete database: %v", err)
+	}
+}

@@ -485,6 +485,335 @@ type DatabaseValidateParametersSchema struct {
 	ServerCert nullable.Nullable[string] `json:"server_cert,omitempty"`
 }
 
+// DatasetCacheWarmUpRequestSchema defines model for DatasetCacheWarmUpRequestSchema.
+type DatasetCacheWarmUpRequestSchema struct {
+	// DashboardId The ID of the dashboard to get filters for when warming cache
+	DashboardId int `json:"dashboard_id,omitempty"`
+
+	// DbName The name of the database where the table is located
+	DbName string `json:"db_name"`
+
+	// ExtraFilters Extra filters to apply when warming up cache
+	ExtraFilters string `json:"extra_filters,omitempty"`
+
+	// TableName The name of the table to warm up cache for
+	TableName string `json:"table_name"`
+}
+
+// DatasetCacheWarmUpResponseSchema defines model for DatasetCacheWarmUpResponseSchema.
+type DatasetCacheWarmUpResponseSchema struct {
+	// Result A list of each chart's warmup status and errors if any
+	Result []DatasetCacheWarmUpResponseSingle `json:"result,omitempty"`
+}
+
+// DatasetCacheWarmUpResponseSingle defines model for DatasetCacheWarmUpResponseSingle.
+type DatasetCacheWarmUpResponseSingle struct {
+	// ChartId The ID of the chart the status belongs to
+	ChartId int `json:"chart_id,omitempty"`
+
+	// VizError Error that occurred when warming cache for chart
+	VizError string `json:"viz_error,omitempty"`
+
+	// VizStatus Status of the underlying query for the viz
+	VizStatus string `json:"viz_status,omitempty"`
+}
+
+// DatasetColumnsPut defines model for DatasetColumnsPut.
+type DatasetColumnsPut struct {
+	AdvancedDataType nullable.Nullable[string]             `json:"advanced_data_type,omitempty"`
+	ColumnName       string                                `json:"column_name"`
+	Description      nullable.Nullable[string]             `json:"description,omitempty"`
+	Expression       nullable.Nullable[string]             `json:"expression,omitempty"`
+	Extra            nullable.Nullable[string]             `json:"extra,omitempty"`
+	Filterable       bool                                  `json:"filterable,omitempty"`
+	Groupby          bool                                  `json:"groupby,omitempty"`
+	Id               int                                   `json:"id,omitempty"`
+	IsActive         nullable.Nullable[bool]               `json:"is_active,omitempty"`
+	IsDttm           nullable.Nullable[bool]               `json:"is_dttm,omitempty"`
+	PythonDateFormat nullable.Nullable[string]             `json:"python_date_format,omitempty"`
+	Type             nullable.Nullable[string]             `json:"type,omitempty"`
+	Uuid             nullable.Nullable[openapi_types.UUID] `json:"uuid,omitempty"`
+	VerboseName      nullable.Nullable[string]             `json:"verbose_name,omitempty"`
+}
+
+// DatasetDuplicateSchema defines model for DatasetDuplicateSchema.
+type DatasetDuplicateSchema struct {
+	BaseModelId int    `json:"base_model_id"`
+	TableName   string `json:"table_name"`
+}
+
+// DatasetMetricCurrencyPut defines model for DatasetMetricCurrencyPut.
+type DatasetMetricCurrencyPut struct {
+	Symbol         string `json:"symbol,omitempty"`
+	SymbolPosition string `json:"symbolPosition,omitempty"`
+}
+
+// DatasetMetricsPut defines model for DatasetMetricsPut.
+type DatasetMetricsPut struct {
+	Currency    nullable.Nullable[DatasetMetricCurrencyPut] `json:"currency,omitempty"`
+	D3format    nullable.Nullable[string]                   `json:"d3format,omitempty"`
+	Description nullable.Nullable[string]                   `json:"description,omitempty"`
+	Expression  string                                      `json:"expression"`
+	Extra       nullable.Nullable[string]                   `json:"extra,omitempty"`
+	Id          int                                         `json:"id,omitempty"`
+	MetricName  string                                      `json:"metric_name"`
+	MetricType  nullable.Nullable[string]                   `json:"metric_type,omitempty"`
+	Uuid        nullable.Nullable[openapi_types.UUID]       `json:"uuid,omitempty"`
+	VerboseName nullable.Nullable[string]                   `json:"verbose_name,omitempty"`
+	WarningText nullable.Nullable[string]                   `json:"warning_text,omitempty"`
+}
+
+// DatasetRelatedChart defines model for DatasetRelatedChart.
+type DatasetRelatedChart struct {
+	Id        int    `json:"id,omitempty"`
+	SliceName string `json:"slice_name,omitempty"`
+	VizType   string `json:"viz_type,omitempty"`
+}
+
+// DatasetRelatedCharts defines model for DatasetRelatedCharts.
+type DatasetRelatedCharts struct {
+	// Count Chart count
+	Count int `json:"count,omitempty"`
+
+	// Result A list of dashboards
+	Result []DatasetRelatedChart `json:"result,omitempty"`
+}
+
+// DatasetRelatedDashboard defines model for DatasetRelatedDashboard.
+type DatasetRelatedDashboard struct {
+	Id           int                    `json:"id,omitempty"`
+	JsonMetadata map[string]interface{} `json:"json_metadata,omitempty"`
+	Slug         string                 `json:"slug,omitempty"`
+	Title        string                 `json:"title,omitempty"`
+}
+
+// DatasetRelatedDashboards defines model for DatasetRelatedDashboards.
+type DatasetRelatedDashboards struct {
+	// Count Dashboard count
+	Count int `json:"count,omitempty"`
+
+	// Result A list of dashboards
+	Result []DatasetRelatedDashboard `json:"result,omitempty"`
+}
+
+// DatasetRelatedObjectsResponse defines model for DatasetRelatedObjectsResponse.
+type DatasetRelatedObjectsResponse struct {
+	Charts     DatasetRelatedCharts     `json:"charts,omitempty"`
+	Dashboards DatasetRelatedDashboards `json:"dashboards,omitempty"`
+}
+
+// DatasetRestApiGet defines model for DatasetRestApi.get.
+type DatasetRestApiGet struct {
+	AlwaysFilterMainDttm nullable.Nullable[bool]               `json:"always_filter_main_dttm,omitempty"`
+	CacheTimeout         nullable.Nullable[int]                `json:"cache_timeout,omitempty"`
+	Catalog              nullable.Nullable[string]             `json:"catalog,omitempty"`
+	ChangedBy            DatasetRestApiGetUser2                `json:"changed_by,omitempty"`
+	ChangedOn            nullable.Nullable[string]             `json:"changed_on,omitempty"`
+	ChangedOnHumanized   interface{}                           `json:"changed_on_humanized,omitempty"`
+	ColumnFormats        interface{}                           `json:"column_formats,omitempty"`
+	Columns              []DatasetRestApiGetTableColumn        `json:"columns"`
+	CreatedBy            DatasetRestApiGetUser1                `json:"created_by,omitempty"`
+	CreatedOn            nullable.Nullable[string]             `json:"created_on,omitempty"`
+	CreatedOnHumanized   interface{}                           `json:"created_on_humanized,omitempty"`
+	Database             DatasetRestApiGetDatabase             `json:"database"`
+	DatasourceName       interface{}                           `json:"datasource_name,omitempty"`
+	DatasourceType       interface{}                           `json:"datasource_type,omitempty"`
+	DefaultEndpoint      nullable.Nullable[string]             `json:"default_endpoint,omitempty"`
+	Description          nullable.Nullable[string]             `json:"description,omitempty"`
+	Extra                nullable.Nullable[string]             `json:"extra,omitempty"`
+	FetchValuesPredicate nullable.Nullable[string]             `json:"fetch_values_predicate,omitempty"`
+	FilterSelectEnabled  nullable.Nullable[bool]               `json:"filter_select_enabled,omitempty"`
+	Folders              nullable.Nullable[interface{}]        `json:"folders,omitempty"`
+	GranularitySqla      interface{}                           `json:"granularity_sqla,omitempty"`
+	Id                   int                                   `json:"id,omitempty"`
+	IsManagedExternally  bool                                  `json:"is_managed_externally,omitempty"`
+	IsSqllabView         nullable.Nullable[bool]               `json:"is_sqllab_view,omitempty"`
+	Kind                 interface{}                           `json:"kind,omitempty"`
+	MainDttmCol          nullable.Nullable[string]             `json:"main_dttm_col,omitempty"`
+	Metrics              []DatasetRestApiGetSqlMetric          `json:"metrics"`
+	Name                 interface{}                           `json:"name,omitempty"`
+	NormalizeColumns     nullable.Nullable[bool]               `json:"normalize_columns,omitempty"`
+	Offset               nullable.Nullable[int]                `json:"offset,omitempty"`
+	OrderByChoices       interface{}                           `json:"order_by_choices,omitempty"`
+	Owners               []DatasetRestApiGetUser               `json:"owners,omitempty"`
+	Schema               nullable.Nullable[string]             `json:"schema,omitempty"`
+	SelectStar           interface{}                           `json:"select_star,omitempty"`
+	Sql                  nullable.Nullable[string]             `json:"sql,omitempty"`
+	TableName            string                                `json:"table_name"`
+	TemplateParams       nullable.Nullable[string]             `json:"template_params,omitempty"`
+	TimeGrainSqla        interface{}                           `json:"time_grain_sqla,omitempty"`
+	Uid                  interface{}                           `json:"uid,omitempty"`
+	Url                  interface{}                           `json:"url,omitempty"`
+	Uuid                 nullable.Nullable[openapi_types.UUID] `json:"uuid,omitempty"`
+	VerboseMap           interface{}                           `json:"verbose_map,omitempty"`
+}
+
+// DatasetRestApiGetDatabase defines model for DatasetRestApi.get.Database.
+type DatasetRestApiGetDatabase struct {
+	AllowMultiCatalog interface{}                           `json:"allow_multi_catalog,omitempty"`
+	Backend           interface{}                           `json:"backend,omitempty"`
+	DatabaseName      string                                `json:"database_name"`
+	Id                int                                   `json:"id,omitempty"`
+	Uuid              nullable.Nullable[openapi_types.UUID] `json:"uuid,omitempty"`
+}
+
+// DatasetRestApiGetSqlMetric defines model for DatasetRestApi.get.SqlMetric.
+type DatasetRestApiGetSqlMetric struct {
+	ChangedOn   nullable.Nullable[string]             `json:"changed_on,omitempty"`
+	CreatedOn   nullable.Nullable[string]             `json:"created_on,omitempty"`
+	Currency    nullable.Nullable[interface{}]        `json:"currency,omitempty"`
+	D3format    nullable.Nullable[string]             `json:"d3format,omitempty"`
+	Description nullable.Nullable[string]             `json:"description,omitempty"`
+	Expression  string                                `json:"expression"`
+	Extra       nullable.Nullable[string]             `json:"extra,omitempty"`
+	Id          int                                   `json:"id,omitempty"`
+	MetricName  string                                `json:"metric_name"`
+	MetricType  nullable.Nullable[string]             `json:"metric_type,omitempty"`
+	Uuid        nullable.Nullable[openapi_types.UUID] `json:"uuid,omitempty"`
+	VerboseName nullable.Nullable[string]             `json:"verbose_name,omitempty"`
+	WarningText nullable.Nullable[string]             `json:"warning_text,omitempty"`
+}
+
+// DatasetRestApiGetTableColumn defines model for DatasetRestApi.get.TableColumn.
+type DatasetRestApiGetTableColumn struct {
+	AdvancedDataType nullable.Nullable[string]             `json:"advanced_data_type,omitempty"`
+	ChangedOn        nullable.Nullable[string]             `json:"changed_on,omitempty"`
+	ColumnName       string                                `json:"column_name"`
+	CreatedOn        nullable.Nullable[string]             `json:"created_on,omitempty"`
+	Description      nullable.Nullable[string]             `json:"description,omitempty"`
+	Expression       nullable.Nullable[string]             `json:"expression,omitempty"`
+	Extra            nullable.Nullable[string]             `json:"extra,omitempty"`
+	Filterable       nullable.Nullable[bool]               `json:"filterable,omitempty"`
+	Groupby          nullable.Nullable[bool]               `json:"groupby,omitempty"`
+	Id               int                                   `json:"id,omitempty"`
+	IsActive         nullable.Nullable[bool]               `json:"is_active,omitempty"`
+	IsDttm           nullable.Nullable[bool]               `json:"is_dttm,omitempty"`
+	PythonDateFormat nullable.Nullable[string]             `json:"python_date_format,omitempty"`
+	Type             nullable.Nullable[string]             `json:"type,omitempty"`
+	TypeGeneric      interface{}                           `json:"type_generic,omitempty"`
+	Uuid             nullable.Nullable[openapi_types.UUID] `json:"uuid,omitempty"`
+	VerboseName      nullable.Nullable[string]             `json:"verbose_name,omitempty"`
+}
+
+// DatasetRestApiGetUser defines model for DatasetRestApi.get.User.
+type DatasetRestApiGetUser struct {
+	FirstName string `json:"first_name"`
+	Id        int    `json:"id,omitempty"`
+	LastName  string `json:"last_name"`
+}
+
+// DatasetRestApiGetUser1 defines model for DatasetRestApi.get.User1.
+type DatasetRestApiGetUser1 struct {
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+}
+
+// DatasetRestApiGetUser2 defines model for DatasetRestApi.get.User2.
+type DatasetRestApiGetUser2 struct {
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+}
+
+// DatasetRestApiGetList defines model for DatasetRestApi.get_list.
+type DatasetRestApiGetList struct {
+	Catalog                 nullable.Nullable[string]             `json:"catalog,omitempty"`
+	ChangedBy               DatasetRestApiGetListUser             `json:"changed_by,omitempty"`
+	ChangedByName           interface{}                           `json:"changed_by_name,omitempty"`
+	ChangedOnDeltaHumanized interface{}                           `json:"changed_on_delta_humanized,omitempty"`
+	ChangedOnUtc            interface{}                           `json:"changed_on_utc,omitempty"`
+	Database                DatasetRestApiGetListDatabase         `json:"database"`
+	DatasourceType          interface{}                           `json:"datasource_type,omitempty"`
+	DefaultEndpoint         nullable.Nullable[string]             `json:"default_endpoint,omitempty"`
+	Description             nullable.Nullable[string]             `json:"description,omitempty"`
+	ExploreUrl              interface{}                           `json:"explore_url,omitempty"`
+	Extra                   nullable.Nullable[string]             `json:"extra,omitempty"`
+	Id                      int                                   `json:"id,omitempty"`
+	Kind                    interface{}                           `json:"kind,omitempty"`
+	Owners                  []DatasetRestApiGetListUser1          `json:"owners,omitempty"`
+	Schema                  nullable.Nullable[string]             `json:"schema,omitempty"`
+	Sql                     nullable.Nullable[string]             `json:"sql,omitempty"`
+	TableName               string                                `json:"table_name"`
+	Uuid                    nullable.Nullable[openapi_types.UUID] `json:"uuid,omitempty"`
+}
+
+// DatasetRestApiGetListDatabase defines model for DatasetRestApi.get_list.Database.
+type DatasetRestApiGetListDatabase struct {
+	DatabaseName string                                `json:"database_name"`
+	Id           int                                   `json:"id,omitempty"`
+	Uuid         nullable.Nullable[openapi_types.UUID] `json:"uuid,omitempty"`
+}
+
+// DatasetRestApiGetListUser defines model for DatasetRestApi.get_list.User.
+type DatasetRestApiGetListUser struct {
+	FirstName string `json:"first_name"`
+	Id        int    `json:"id,omitempty"`
+	LastName  string `json:"last_name"`
+}
+
+// DatasetRestApiGetListUser1 defines model for DatasetRestApi.get_list.User1.
+type DatasetRestApiGetListUser1 struct {
+	FirstName string `json:"first_name"`
+	Id        int    `json:"id,omitempty"`
+	LastName  string `json:"last_name"`
+}
+
+// DatasetRestApiPost defines model for DatasetRestApi.post.
+type DatasetRestApiPost struct {
+	AlwaysFilterMainDttm bool                                  `json:"always_filter_main_dttm,omitempty"`
+	Catalog              nullable.Nullable[string]             `json:"catalog,omitempty"`
+	Database             int                                   `json:"database"`
+	ExternalUrl          nullable.Nullable[string]             `json:"external_url,omitempty"`
+	IsManagedExternally  nullable.Nullable[bool]               `json:"is_managed_externally,omitempty"`
+	NormalizeColumns     bool                                  `json:"normalize_columns,omitempty"`
+	Owners               []int                                 `json:"owners,omitempty"`
+	Schema               nullable.Nullable[string]             `json:"schema,omitempty"`
+	Sql                  nullable.Nullable[string]             `json:"sql,omitempty"`
+	TableName            string                                `json:"table_name"`
+	TemplateParams       nullable.Nullable[string]             `json:"template_params,omitempty"`
+	Uuid                 nullable.Nullable[openapi_types.UUID] `json:"uuid,omitempty"`
+}
+
+// DatasetRestApiPut defines model for DatasetRestApi.put.
+type DatasetRestApiPut struct {
+	AlwaysFilterMainDttm bool                                  `json:"always_filter_main_dttm,omitempty"`
+	CacheTimeout         nullable.Nullable[int]                `json:"cache_timeout,omitempty"`
+	Catalog              nullable.Nullable[string]             `json:"catalog,omitempty"`
+	Columns              []DatasetColumnsPut                   `json:"columns,omitempty"`
+	DatabaseId           int                                   `json:"database_id,omitempty"`
+	DefaultEndpoint      nullable.Nullable[string]             `json:"default_endpoint,omitempty"`
+	Description          nullable.Nullable[string]             `json:"description,omitempty"`
+	ExternalUrl          nullable.Nullable[string]             `json:"external_url,omitempty"`
+	Extra                nullable.Nullable[string]             `json:"extra,omitempty"`
+	FetchValuesPredicate nullable.Nullable[string]             `json:"fetch_values_predicate,omitempty"`
+	FilterSelectEnabled  nullable.Nullable[bool]               `json:"filter_select_enabled,omitempty"`
+	Folders              []Folder                              `json:"folders,omitempty"`
+	IsManagedExternally  nullable.Nullable[bool]               `json:"is_managed_externally,omitempty"`
+	IsSqllabView         nullable.Nullable[bool]               `json:"is_sqllab_view,omitempty"`
+	MainDttmCol          nullable.Nullable[string]             `json:"main_dttm_col,omitempty"`
+	Metrics              []DatasetMetricsPut                   `json:"metrics,omitempty"`
+	NormalizeColumns     nullable.Nullable[bool]               `json:"normalize_columns,omitempty"`
+	Offset               nullable.Nullable[int]                `json:"offset,omitempty"`
+	Owners               []int                                 `json:"owners,omitempty"`
+	Schema               nullable.Nullable[string]             `json:"schema,omitempty"`
+	Sql                  nullable.Nullable[string]             `json:"sql,omitempty"`
+	TableName            nullable.Nullable[string]             `json:"table_name,omitempty"`
+	TemplateParams       nullable.Nullable[string]             `json:"template_params,omitempty"`
+	Uuid                 nullable.Nullable[openapi_types.UUID] `json:"uuid,omitempty"`
+}
+
+// DistincResponseSchema defines model for DistincResponseSchema.
+type DistincResponseSchema struct {
+	// Count The total number of distinct values
+	Count  int                      `json:"count,omitempty"`
+	Result []DistinctResultResponse `json:"result,omitempty"`
+}
+
+// DistinctResultResponse defines model for DistinctResultResponse.
+type DistinctResultResponse struct {
+	// Text The distinct item
+	Text string `json:"text,omitempty"`
+}
+
 // EngineInformation defines model for EngineInformation.
 type EngineInformation struct {
 	// DisableSshTunneling SSH tunnel is not available to the database
@@ -516,6 +845,27 @@ type FolderType string
 type GetFavStarIdsSchema struct {
 	// Result A list of results for each corresponding chart in the request
 	Result []ChartFavStarResponseResult `json:"result,omitempty"`
+}
+
+// GetOrCreateDatasetSchema defines model for GetOrCreateDatasetSchema.
+type GetOrCreateDatasetSchema struct {
+	AlwaysFilterMainDttm bool `json:"always_filter_main_dttm,omitempty"`
+
+	// Catalog The catalog the table belongs to
+	Catalog nullable.Nullable[string] `json:"catalog,omitempty"`
+
+	// DatabaseId ID of database table belongs to
+	DatabaseId       int  `json:"database_id"`
+	NormalizeColumns bool `json:"normalize_columns,omitempty"`
+
+	// Schema The schema the table belongs to
+	Schema nullable.Nullable[string] `json:"schema,omitempty"`
+
+	// TableName Name of table
+	TableName string `json:"table_name"`
+
+	// TemplateParams Template params for the table
+	TemplateParams string `json:"template_params,omitempty"`
 }
 
 // GroupApiGet defines model for GroupApi.get.
@@ -1237,6 +1587,9 @@ type DatabaseTablesQuerySchema struct {
 // DeleteTagsSchema defines model for delete_tags_schema.
 type DeleteTagsSchema = []string
 
+// GetDeleteIdsSchema defines model for get_delete_ids_schema.
+type GetDeleteIdsSchema = []int
+
 // GetExportIdsSchema defines model for get_export_ids_schema.
 type GetExportIdsSchema = []int
 
@@ -1447,6 +1800,76 @@ type GetApiV1DatabasePkTablesParams struct {
 	Q DatabaseTablesQuerySchema `form:"q,omitempty" json:"q,omitempty"`
 }
 
+// DeleteApiV1DatasetParams defines parameters for DeleteApiV1Dataset.
+type DeleteApiV1DatasetParams struct {
+	Q GetDeleteIdsSchema `form:"q,omitempty" json:"q,omitempty"`
+}
+
+// GetApiV1DatasetParams defines parameters for GetApiV1Dataset.
+type GetApiV1DatasetParams struct {
+	Q GetListSchema `form:"q,omitempty" json:"q,omitempty"`
+}
+
+// GetApiV1DatasetInfoParams defines parameters for GetApiV1DatasetInfo.
+type GetApiV1DatasetInfoParams struct {
+	Q GetInfoSchema `form:"q,omitempty" json:"q,omitempty"`
+}
+
+// GetApiV1DatasetDistinctColumnNameParams defines parameters for GetApiV1DatasetDistinctColumnName.
+type GetApiV1DatasetDistinctColumnNameParams struct {
+	Q GetRelatedSchema `form:"q,omitempty" json:"q,omitempty"`
+}
+
+// GetApiV1DatasetExportParams defines parameters for GetApiV1DatasetExport.
+type GetApiV1DatasetExportParams struct {
+	Q GetExportIdsSchema `form:"q,omitempty" json:"q,omitempty"`
+}
+
+// PostApiV1DatasetImportMultipartBody defines parameters for PostApiV1DatasetImport.
+type PostApiV1DatasetImportMultipartBody struct {
+	// FormData upload file (ZIP or YAML)
+	FormData openapi_types.File `json:"formData,omitempty"`
+
+	// Overwrite overwrite existing datasets?
+	Overwrite bool `json:"overwrite,omitempty"`
+
+	// Passwords JSON map of passwords for each featured database in the ZIP file. If the ZIP includes a database config in the path `databases/MyDatabase.yaml`, the password should be provided in the following format: `{"databases/MyDatabase.yaml": "my_password"}`.
+	Passwords string `json:"passwords,omitempty"`
+
+	// SshTunnelPasswords JSON map of passwords for each ssh_tunnel associated to a featured database in the ZIP file. If the ZIP includes a ssh_tunnel config in the path `databases/MyDatabase.yaml`, the password should be provided in the following format: `{"databases/MyDatabase.yaml": "my_password"}`.
+	SshTunnelPasswords string `json:"ssh_tunnel_passwords,omitempty"`
+
+	// SshTunnelPrivateKeyPasswords JSON map of private_key_passwords for each ssh_tunnel associated to a featured database in the ZIP file. If the ZIP includes a ssh_tunnel config in the path `databases/MyDatabase.yaml`, the private_key should be provided in the following format: `{"databases/MyDatabase.yaml": "my_private_key_password"}`.
+	SshTunnelPrivateKeyPasswords string `json:"ssh_tunnel_private_key_passwords,omitempty"`
+
+	// SshTunnelPrivateKeys JSON map of private_keys for each ssh_tunnel associated to a featured database in the ZIP file. If the ZIP includes a ssh_tunnel config in the path `databases/MyDatabase.yaml`, the private_key should be provided in the following format: `{"databases/MyDatabase.yaml": "my_private_key"}`.
+	SshTunnelPrivateKeys string `json:"ssh_tunnel_private_keys,omitempty"`
+
+	// SyncColumns sync columns?
+	SyncColumns bool `json:"sync_columns,omitempty"`
+
+	// SyncMetrics sync metrics?
+	SyncMetrics bool `json:"sync_metrics,omitempty"`
+}
+
+// GetApiV1DatasetRelatedColumnNameParams defines parameters for GetApiV1DatasetRelatedColumnName.
+type GetApiV1DatasetRelatedColumnNameParams struct {
+	Q GetRelatedSchema `form:"q,omitempty" json:"q,omitempty"`
+}
+
+// GetApiV1DatasetPkParams defines parameters for GetApiV1DatasetPk.
+type GetApiV1DatasetPkParams struct {
+	Q GetItemSchema `form:"q,omitempty" json:"q,omitempty"`
+
+	// IncludeRenderedSql Should Jinja macros from sql, metrics and columns be rendered and included in the response
+	IncludeRenderedSql bool `form:"include_rendered_sql,omitempty" json:"include_rendered_sql,omitempty"`
+}
+
+// PutApiV1DatasetPkParams defines parameters for PutApiV1DatasetPk.
+type PutApiV1DatasetPkParams struct {
+	OverrideColumns bool `form:"override_columns,omitempty" json:"override_columns,omitempty"`
+}
+
 // GetApiV1SecurityGroupsParams defines parameters for GetApiV1SecurityGroups.
 type GetApiV1SecurityGroupsParams struct {
 	Q GetListSchema `form:"q,omitempty" json:"q,omitempty"`
@@ -1613,6 +2036,24 @@ type PostApiV1DatabasePkUploadMultipartRequestBody = UploadPostSchema
 
 // PostApiV1DatabasePkValidateSqlJSONRequestBody defines body for PostApiV1DatabasePkValidateSql for application/json ContentType.
 type PostApiV1DatabasePkValidateSqlJSONRequestBody = ValidateSQLRequest
+
+// PostApiV1DatasetJSONRequestBody defines body for PostApiV1Dataset for application/json ContentType.
+type PostApiV1DatasetJSONRequestBody = DatasetRestApiPost
+
+// PostApiV1DatasetDuplicateJSONRequestBody defines body for PostApiV1DatasetDuplicate for application/json ContentType.
+type PostApiV1DatasetDuplicateJSONRequestBody = DatasetDuplicateSchema
+
+// PostApiV1DatasetGetOrCreateJSONRequestBody defines body for PostApiV1DatasetGetOrCreate for application/json ContentType.
+type PostApiV1DatasetGetOrCreateJSONRequestBody = GetOrCreateDatasetSchema
+
+// PostApiV1DatasetImportMultipartRequestBody defines body for PostApiV1DatasetImport for multipart/form-data ContentType.
+type PostApiV1DatasetImportMultipartRequestBody PostApiV1DatasetImportMultipartBody
+
+// PutApiV1DatasetWarmUpCacheJSONRequestBody defines body for PutApiV1DatasetWarmUpCache for application/json ContentType.
+type PutApiV1DatasetWarmUpCacheJSONRequestBody = DatasetCacheWarmUpRequestSchema
+
+// PutApiV1DatasetPkJSONRequestBody defines body for PutApiV1DatasetPk for application/json ContentType.
+type PutApiV1DatasetPkJSONRequestBody = DatasetRestApiPut
 
 // PostApiV1SecurityGroupsJSONRequestBody defines body for PostApiV1SecurityGroups for application/json ContentType.
 type PostApiV1SecurityGroupsJSONRequestBody = GroupPostSchema
@@ -2042,6 +2483,73 @@ type ClientInterface interface {
 	PostApiV1DatabasePkValidateSqlWithBody(ctx context.Context, pk int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	PostApiV1DatabasePkValidateSql(ctx context.Context, pk int, body PostApiV1DatabasePkValidateSqlJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteApiV1Dataset request
+	DeleteApiV1Dataset(ctx context.Context, params *DeleteApiV1DatasetParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetApiV1Dataset request
+	GetApiV1Dataset(ctx context.Context, params *GetApiV1DatasetParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PostApiV1DatasetWithBody request with any body
+	PostApiV1DatasetWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	PostApiV1Dataset(ctx context.Context, body PostApiV1DatasetJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetApiV1DatasetInfo request
+	GetApiV1DatasetInfo(ctx context.Context, params *GetApiV1DatasetInfoParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetApiV1DatasetDistinctColumnName request
+	GetApiV1DatasetDistinctColumnName(ctx context.Context, columnName string, params *GetApiV1DatasetDistinctColumnNameParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PostApiV1DatasetDuplicateWithBody request with any body
+	PostApiV1DatasetDuplicateWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	PostApiV1DatasetDuplicate(ctx context.Context, body PostApiV1DatasetDuplicateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetApiV1DatasetExport request
+	GetApiV1DatasetExport(ctx context.Context, params *GetApiV1DatasetExportParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PostApiV1DatasetGetOrCreateWithBody request with any body
+	PostApiV1DatasetGetOrCreateWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	PostApiV1DatasetGetOrCreate(ctx context.Context, body PostApiV1DatasetGetOrCreateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PostApiV1DatasetImportWithBody request with any body
+	PostApiV1DatasetImportWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetApiV1DatasetRelatedColumnName request
+	GetApiV1DatasetRelatedColumnName(ctx context.Context, columnName string, params *GetApiV1DatasetRelatedColumnNameParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PutApiV1DatasetWarmUpCacheWithBody request with any body
+	PutApiV1DatasetWarmUpCacheWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	PutApiV1DatasetWarmUpCache(ctx context.Context, body PutApiV1DatasetWarmUpCacheJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteApiV1DatasetPk request
+	DeleteApiV1DatasetPk(ctx context.Context, pk int, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetApiV1DatasetPk request
+	GetApiV1DatasetPk(ctx context.Context, pk int, params *GetApiV1DatasetPkParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PutApiV1DatasetPkWithBody request with any body
+	PutApiV1DatasetPkWithBody(ctx context.Context, pk int, params *PutApiV1DatasetPkParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	PutApiV1DatasetPk(ctx context.Context, pk int, params *PutApiV1DatasetPkParams, body PutApiV1DatasetPkJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteApiV1DatasetPkColumnColumnId request
+	DeleteApiV1DatasetPkColumnColumnId(ctx context.Context, pk int, columnId int, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetApiV1DatasetPkDrillInfo request
+	GetApiV1DatasetPkDrillInfo(ctx context.Context, pk int, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteApiV1DatasetPkMetricMetricId request
+	DeleteApiV1DatasetPkMetricMetricId(ctx context.Context, pk int, metricId int, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PutApiV1DatasetPkRefresh request
+	PutApiV1DatasetPkRefresh(ctx context.Context, pk int, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetApiV1DatasetPkRelatedObjects request
+	GetApiV1DatasetPkRelatedObjects(ctx context.Context, pk int, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetApiV1SecurityCsrfToken request
 	GetApiV1SecurityCsrfToken(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -2644,6 +3152,294 @@ func (c *Client) PostApiV1DatabasePkValidateSqlWithBody(ctx context.Context, pk 
 
 func (c *Client) PostApiV1DatabasePkValidateSql(ctx context.Context, pk int, body PostApiV1DatabasePkValidateSqlJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewPostApiV1DatabasePkValidateSqlRequest(c.Server, pk, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteApiV1Dataset(ctx context.Context, params *DeleteApiV1DatasetParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteApiV1DatasetRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetApiV1Dataset(ctx context.Context, params *GetApiV1DatasetParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetApiV1DatasetRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) PostApiV1DatasetWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostApiV1DatasetRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) PostApiV1Dataset(ctx context.Context, body PostApiV1DatasetJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostApiV1DatasetRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetApiV1DatasetInfo(ctx context.Context, params *GetApiV1DatasetInfoParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetApiV1DatasetInfoRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetApiV1DatasetDistinctColumnName(ctx context.Context, columnName string, params *GetApiV1DatasetDistinctColumnNameParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetApiV1DatasetDistinctColumnNameRequest(c.Server, columnName, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) PostApiV1DatasetDuplicateWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostApiV1DatasetDuplicateRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) PostApiV1DatasetDuplicate(ctx context.Context, body PostApiV1DatasetDuplicateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostApiV1DatasetDuplicateRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetApiV1DatasetExport(ctx context.Context, params *GetApiV1DatasetExportParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetApiV1DatasetExportRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) PostApiV1DatasetGetOrCreateWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostApiV1DatasetGetOrCreateRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) PostApiV1DatasetGetOrCreate(ctx context.Context, body PostApiV1DatasetGetOrCreateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostApiV1DatasetGetOrCreateRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) PostApiV1DatasetImportWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostApiV1DatasetImportRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetApiV1DatasetRelatedColumnName(ctx context.Context, columnName string, params *GetApiV1DatasetRelatedColumnNameParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetApiV1DatasetRelatedColumnNameRequest(c.Server, columnName, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) PutApiV1DatasetWarmUpCacheWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPutApiV1DatasetWarmUpCacheRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) PutApiV1DatasetWarmUpCache(ctx context.Context, body PutApiV1DatasetWarmUpCacheJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPutApiV1DatasetWarmUpCacheRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteApiV1DatasetPk(ctx context.Context, pk int, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteApiV1DatasetPkRequest(c.Server, pk)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetApiV1DatasetPk(ctx context.Context, pk int, params *GetApiV1DatasetPkParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetApiV1DatasetPkRequest(c.Server, pk, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) PutApiV1DatasetPkWithBody(ctx context.Context, pk int, params *PutApiV1DatasetPkParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPutApiV1DatasetPkRequestWithBody(c.Server, pk, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) PutApiV1DatasetPk(ctx context.Context, pk int, params *PutApiV1DatasetPkParams, body PutApiV1DatasetPkJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPutApiV1DatasetPkRequest(c.Server, pk, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteApiV1DatasetPkColumnColumnId(ctx context.Context, pk int, columnId int, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteApiV1DatasetPkColumnColumnIdRequest(c.Server, pk, columnId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetApiV1DatasetPkDrillInfo(ctx context.Context, pk int, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetApiV1DatasetPkDrillInfoRequest(c.Server, pk)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteApiV1DatasetPkMetricMetricId(ctx context.Context, pk int, metricId int, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteApiV1DatasetPkMetricMetricIdRequest(c.Server, pk, metricId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) PutApiV1DatasetPkRefresh(ctx context.Context, pk int, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPutApiV1DatasetPkRefreshRequest(c.Server, pk)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetApiV1DatasetPkRelatedObjects(ctx context.Context, pk int, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetApiV1DatasetPkRelatedObjectsRequest(c.Server, pk)
 	if err != nil {
 		return nil, err
 	}
@@ -4756,6 +5552,784 @@ func NewPostApiV1DatabasePkValidateSqlRequestWithBody(server string, pk int, con
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteApiV1DatasetRequest generates requests for DeleteApiV1Dataset
+func NewDeleteApiV1DatasetRequest(server string, params *DeleteApiV1DatasetParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/dataset/")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryParamBuf, err := json.Marshal(params.Q); err != nil {
+			return nil, err
+		} else {
+			queryValues.Add("q", string(queryParamBuf))
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetApiV1DatasetRequest generates requests for GetApiV1Dataset
+func NewGetApiV1DatasetRequest(server string, params *GetApiV1DatasetParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/dataset/")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryParamBuf, err := json.Marshal(params.Q); err != nil {
+			return nil, err
+		} else {
+			queryValues.Add("q", string(queryParamBuf))
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewPostApiV1DatasetRequest calls the generic PostApiV1Dataset builder with application/json body
+func NewPostApiV1DatasetRequest(server string, body PostApiV1DatasetJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPostApiV1DatasetRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewPostApiV1DatasetRequestWithBody generates requests for PostApiV1Dataset with any type of body
+func NewPostApiV1DatasetRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/dataset/")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetApiV1DatasetInfoRequest generates requests for GetApiV1DatasetInfo
+func NewGetApiV1DatasetInfoRequest(server string, params *GetApiV1DatasetInfoParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/dataset/_info")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryParamBuf, err := json.Marshal(params.Q); err != nil {
+			return nil, err
+		} else {
+			queryValues.Add("q", string(queryParamBuf))
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetApiV1DatasetDistinctColumnNameRequest generates requests for GetApiV1DatasetDistinctColumnName
+func NewGetApiV1DatasetDistinctColumnNameRequest(server string, columnName string, params *GetApiV1DatasetDistinctColumnNameParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "column_name", runtime.ParamLocationPath, columnName)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/dataset/distinct/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryParamBuf, err := json.Marshal(params.Q); err != nil {
+			return nil, err
+		} else {
+			queryValues.Add("q", string(queryParamBuf))
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewPostApiV1DatasetDuplicateRequest calls the generic PostApiV1DatasetDuplicate builder with application/json body
+func NewPostApiV1DatasetDuplicateRequest(server string, body PostApiV1DatasetDuplicateJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPostApiV1DatasetDuplicateRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewPostApiV1DatasetDuplicateRequestWithBody generates requests for PostApiV1DatasetDuplicate with any type of body
+func NewPostApiV1DatasetDuplicateRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/dataset/duplicate")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetApiV1DatasetExportRequest generates requests for GetApiV1DatasetExport
+func NewGetApiV1DatasetExportRequest(server string, params *GetApiV1DatasetExportParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/dataset/export/")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryParamBuf, err := json.Marshal(params.Q); err != nil {
+			return nil, err
+		} else {
+			queryValues.Add("q", string(queryParamBuf))
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewPostApiV1DatasetGetOrCreateRequest calls the generic PostApiV1DatasetGetOrCreate builder with application/json body
+func NewPostApiV1DatasetGetOrCreateRequest(server string, body PostApiV1DatasetGetOrCreateJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPostApiV1DatasetGetOrCreateRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewPostApiV1DatasetGetOrCreateRequestWithBody generates requests for PostApiV1DatasetGetOrCreate with any type of body
+func NewPostApiV1DatasetGetOrCreateRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/dataset/get_or_create/")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewPostApiV1DatasetImportRequestWithBody generates requests for PostApiV1DatasetImport with any type of body
+func NewPostApiV1DatasetImportRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/dataset/import/")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetApiV1DatasetRelatedColumnNameRequest generates requests for GetApiV1DatasetRelatedColumnName
+func NewGetApiV1DatasetRelatedColumnNameRequest(server string, columnName string, params *GetApiV1DatasetRelatedColumnNameParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "column_name", runtime.ParamLocationPath, columnName)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/dataset/related/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryParamBuf, err := json.Marshal(params.Q); err != nil {
+			return nil, err
+		} else {
+			queryValues.Add("q", string(queryParamBuf))
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewPutApiV1DatasetWarmUpCacheRequest calls the generic PutApiV1DatasetWarmUpCache builder with application/json body
+func NewPutApiV1DatasetWarmUpCacheRequest(server string, body PutApiV1DatasetWarmUpCacheJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPutApiV1DatasetWarmUpCacheRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewPutApiV1DatasetWarmUpCacheRequestWithBody generates requests for PutApiV1DatasetWarmUpCache with any type of body
+func NewPutApiV1DatasetWarmUpCacheRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/dataset/warm_up_cache")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteApiV1DatasetPkRequest generates requests for DeleteApiV1DatasetPk
+func NewDeleteApiV1DatasetPkRequest(server string, pk int) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "pk", runtime.ParamLocationPath, pk)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/dataset/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetApiV1DatasetPkRequest generates requests for GetApiV1DatasetPk
+func NewGetApiV1DatasetPkRequest(server string, pk int, params *GetApiV1DatasetPkParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "pk", runtime.ParamLocationPath, pk)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/dataset/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryParamBuf, err := json.Marshal(params.Q); err != nil {
+			return nil, err
+		} else {
+			queryValues.Add("q", string(queryParamBuf))
+		}
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "include_rendered_sql", runtime.ParamLocationQuery, params.IncludeRenderedSql); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewPutApiV1DatasetPkRequest calls the generic PutApiV1DatasetPk builder with application/json body
+func NewPutApiV1DatasetPkRequest(server string, pk int, params *PutApiV1DatasetPkParams, body PutApiV1DatasetPkJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPutApiV1DatasetPkRequestWithBody(server, pk, params, "application/json", bodyReader)
+}
+
+// NewPutApiV1DatasetPkRequestWithBody generates requests for PutApiV1DatasetPk with any type of body
+func NewPutApiV1DatasetPkRequestWithBody(server string, pk int, params *PutApiV1DatasetPkParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "pk", runtime.ParamLocationPath, pk)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/dataset/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "override_columns", runtime.ParamLocationQuery, params.OverrideColumns); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteApiV1DatasetPkColumnColumnIdRequest generates requests for DeleteApiV1DatasetPkColumnColumnId
+func NewDeleteApiV1DatasetPkColumnColumnIdRequest(server string, pk int, columnId int) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "pk", runtime.ParamLocationPath, pk)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "column_id", runtime.ParamLocationPath, columnId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/dataset/%s/column/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetApiV1DatasetPkDrillInfoRequest generates requests for GetApiV1DatasetPkDrillInfo
+func NewGetApiV1DatasetPkDrillInfoRequest(server string, pk int) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "pk", runtime.ParamLocationPath, pk)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/dataset/%s/drill_info/", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewDeleteApiV1DatasetPkMetricMetricIdRequest generates requests for DeleteApiV1DatasetPkMetricMetricId
+func NewDeleteApiV1DatasetPkMetricMetricIdRequest(server string, pk int, metricId int) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "pk", runtime.ParamLocationPath, pk)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "metric_id", runtime.ParamLocationPath, metricId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/dataset/%s/metric/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewPutApiV1DatasetPkRefreshRequest generates requests for PutApiV1DatasetPkRefresh
+func NewPutApiV1DatasetPkRefreshRequest(server string, pk int) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "pk", runtime.ParamLocationPath, pk)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/dataset/%s/refresh", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetApiV1DatasetPkRelatedObjectsRequest generates requests for GetApiV1DatasetPkRelatedObjects
+func NewGetApiV1DatasetPkRelatedObjectsRequest(server string, pk int) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "pk", runtime.ParamLocationPath, pk)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/dataset/%s/related_objects", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	return req, nil
 }
@@ -6876,6 +8450,73 @@ type ClientWithResponsesInterface interface {
 
 	PostApiV1DatabasePkValidateSqlWithResponse(ctx context.Context, pk int, body PostApiV1DatabasePkValidateSqlJSONRequestBody, reqEditors ...RequestEditorFn) (*PostApiV1DatabasePkValidateSqlResponse, error)
 
+	// DeleteApiV1DatasetWithResponse request
+	DeleteApiV1DatasetWithResponse(ctx context.Context, params *DeleteApiV1DatasetParams, reqEditors ...RequestEditorFn) (*DeleteApiV1DatasetResponse, error)
+
+	// GetApiV1DatasetWithResponse request
+	GetApiV1DatasetWithResponse(ctx context.Context, params *GetApiV1DatasetParams, reqEditors ...RequestEditorFn) (*GetApiV1DatasetResponse, error)
+
+	// PostApiV1DatasetWithBodyWithResponse request with any body
+	PostApiV1DatasetWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostApiV1DatasetResponse, error)
+
+	PostApiV1DatasetWithResponse(ctx context.Context, body PostApiV1DatasetJSONRequestBody, reqEditors ...RequestEditorFn) (*PostApiV1DatasetResponse, error)
+
+	// GetApiV1DatasetInfoWithResponse request
+	GetApiV1DatasetInfoWithResponse(ctx context.Context, params *GetApiV1DatasetInfoParams, reqEditors ...RequestEditorFn) (*GetApiV1DatasetInfoResponse, error)
+
+	// GetApiV1DatasetDistinctColumnNameWithResponse request
+	GetApiV1DatasetDistinctColumnNameWithResponse(ctx context.Context, columnName string, params *GetApiV1DatasetDistinctColumnNameParams, reqEditors ...RequestEditorFn) (*GetApiV1DatasetDistinctColumnNameResponse, error)
+
+	// PostApiV1DatasetDuplicateWithBodyWithResponse request with any body
+	PostApiV1DatasetDuplicateWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostApiV1DatasetDuplicateResponse, error)
+
+	PostApiV1DatasetDuplicateWithResponse(ctx context.Context, body PostApiV1DatasetDuplicateJSONRequestBody, reqEditors ...RequestEditorFn) (*PostApiV1DatasetDuplicateResponse, error)
+
+	// GetApiV1DatasetExportWithResponse request
+	GetApiV1DatasetExportWithResponse(ctx context.Context, params *GetApiV1DatasetExportParams, reqEditors ...RequestEditorFn) (*GetApiV1DatasetExportResponse, error)
+
+	// PostApiV1DatasetGetOrCreateWithBodyWithResponse request with any body
+	PostApiV1DatasetGetOrCreateWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostApiV1DatasetGetOrCreateResponse, error)
+
+	PostApiV1DatasetGetOrCreateWithResponse(ctx context.Context, body PostApiV1DatasetGetOrCreateJSONRequestBody, reqEditors ...RequestEditorFn) (*PostApiV1DatasetGetOrCreateResponse, error)
+
+	// PostApiV1DatasetImportWithBodyWithResponse request with any body
+	PostApiV1DatasetImportWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostApiV1DatasetImportResponse, error)
+
+	// GetApiV1DatasetRelatedColumnNameWithResponse request
+	GetApiV1DatasetRelatedColumnNameWithResponse(ctx context.Context, columnName string, params *GetApiV1DatasetRelatedColumnNameParams, reqEditors ...RequestEditorFn) (*GetApiV1DatasetRelatedColumnNameResponse, error)
+
+	// PutApiV1DatasetWarmUpCacheWithBodyWithResponse request with any body
+	PutApiV1DatasetWarmUpCacheWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PutApiV1DatasetWarmUpCacheResponse, error)
+
+	PutApiV1DatasetWarmUpCacheWithResponse(ctx context.Context, body PutApiV1DatasetWarmUpCacheJSONRequestBody, reqEditors ...RequestEditorFn) (*PutApiV1DatasetWarmUpCacheResponse, error)
+
+	// DeleteApiV1DatasetPkWithResponse request
+	DeleteApiV1DatasetPkWithResponse(ctx context.Context, pk int, reqEditors ...RequestEditorFn) (*DeleteApiV1DatasetPkResponse, error)
+
+	// GetApiV1DatasetPkWithResponse request
+	GetApiV1DatasetPkWithResponse(ctx context.Context, pk int, params *GetApiV1DatasetPkParams, reqEditors ...RequestEditorFn) (*GetApiV1DatasetPkResponse, error)
+
+	// PutApiV1DatasetPkWithBodyWithResponse request with any body
+	PutApiV1DatasetPkWithBodyWithResponse(ctx context.Context, pk int, params *PutApiV1DatasetPkParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PutApiV1DatasetPkResponse, error)
+
+	PutApiV1DatasetPkWithResponse(ctx context.Context, pk int, params *PutApiV1DatasetPkParams, body PutApiV1DatasetPkJSONRequestBody, reqEditors ...RequestEditorFn) (*PutApiV1DatasetPkResponse, error)
+
+	// DeleteApiV1DatasetPkColumnColumnIdWithResponse request
+	DeleteApiV1DatasetPkColumnColumnIdWithResponse(ctx context.Context, pk int, columnId int, reqEditors ...RequestEditorFn) (*DeleteApiV1DatasetPkColumnColumnIdResponse, error)
+
+	// GetApiV1DatasetPkDrillInfoWithResponse request
+	GetApiV1DatasetPkDrillInfoWithResponse(ctx context.Context, pk int, reqEditors ...RequestEditorFn) (*GetApiV1DatasetPkDrillInfoResponse, error)
+
+	// DeleteApiV1DatasetPkMetricMetricIdWithResponse request
+	DeleteApiV1DatasetPkMetricMetricIdWithResponse(ctx context.Context, pk int, metricId int, reqEditors ...RequestEditorFn) (*DeleteApiV1DatasetPkMetricMetricIdResponse, error)
+
+	// PutApiV1DatasetPkRefreshWithResponse request
+	PutApiV1DatasetPkRefreshWithResponse(ctx context.Context, pk int, reqEditors ...RequestEditorFn) (*PutApiV1DatasetPkRefreshResponse, error)
+
+	// GetApiV1DatasetPkRelatedObjectsWithResponse request
+	GetApiV1DatasetPkRelatedObjectsWithResponse(ctx context.Context, pk int, reqEditors ...RequestEditorFn) (*GetApiV1DatasetPkRelatedObjectsResponse, error)
+
 	// GetApiV1SecurityCsrfTokenWithResponse request
 	GetApiV1SecurityCsrfTokenWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetApiV1SecurityCsrfTokenResponse, error)
 
@@ -7953,6 +9594,580 @@ func (r PostApiV1DatabasePkValidateSqlResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r PostApiV1DatabasePkValidateSqlResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteApiV1DatasetResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Message string `json:"message,omitempty"`
+	}
+	JSON400 *N400
+	JSON401 *N401
+	JSON403 *N403
+	JSON404 *N404
+	JSON422 *N422
+	JSON500 *N500
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteApiV1DatasetResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteApiV1DatasetResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetApiV1DatasetResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		// Count The total record count on the backend
+		Count              float32 `json:"count,omitempty"`
+		DescriptionColumns struct {
+			// ColumnName The description for the column name. Will be translated by babel
+			ColumnName string `json:"column_name,omitempty"`
+		} `json:"description_columns,omitempty"`
+
+		// Ids A list of item ids, useful when you don't know the column id
+		Ids          []int `json:"ids,omitempty"`
+		LabelColumns struct {
+			// ColumnName The label for the column name. Will be translated by babel
+			ColumnName string `json:"column_name,omitempty"`
+		} `json:"label_columns,omitempty"`
+
+		// ListColumns A list of columns
+		ListColumns []string `json:"list_columns,omitempty"`
+
+		// ListTitle A title to render. Will be translated by babel
+		ListTitle string `json:"list_title,omitempty"`
+
+		// OrderColumns A list of allowed columns to sort
+		OrderColumns []string `json:"order_columns,omitempty"`
+
+		// Result The result from the get list query
+		Result []DatasetRestApiGetList `json:"result,omitempty"`
+	}
+	JSON400 *N400
+	JSON401 *N401
+	JSON422 *N422
+	JSON500 *N500
+}
+
+// Status returns HTTPResponse.Status
+func (r GetApiV1DatasetResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetApiV1DatasetResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type PostApiV1DatasetResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *struct {
+		Id     int                `json:"id,omitempty"`
+		Result DatasetRestApiPost `json:"result,omitempty"`
+	}
+	JSON400 *N400
+	JSON401 *N401
+	JSON422 *N422
+	JSON500 *N500
+}
+
+// Status returns HTTPResponse.Status
+func (r PostApiV1DatasetResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PostApiV1DatasetResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetApiV1DatasetInfoResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		AddColumns  map[string]interface{} `json:"add_columns,omitempty"`
+		EditColumns map[string]interface{} `json:"edit_columns,omitempty"`
+		Filters     struct {
+			ColumnName []struct {
+				// Name The filter name. Will be translated by babel
+				Name string `json:"name,omitempty"`
+
+				// Operator The filter operation key to use on list filters
+				Operator string `json:"operator,omitempty"`
+			} `json:"column_name,omitempty"`
+		} `json:"filters,omitempty"`
+
+		// Permissions The user permissions for this API resource
+		Permissions []string `json:"permissions,omitempty"`
+	}
+	JSON400 *N400
+	JSON401 *N401
+	JSON422 *N422
+	JSON500 *N500
+}
+
+// Status returns HTTPResponse.Status
+func (r GetApiV1DatasetInfoResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetApiV1DatasetInfoResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetApiV1DatasetDistinctColumnNameResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *DistincResponseSchema
+	JSON400      *N400
+	JSON401      *N401
+	JSON404      *N404
+	JSON500      *N500
+}
+
+// Status returns HTTPResponse.Status
+func (r GetApiV1DatasetDistinctColumnNameResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetApiV1DatasetDistinctColumnNameResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type PostApiV1DatasetDuplicateResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *struct {
+		Id     int                    `json:"id,omitempty"`
+		Result DatasetDuplicateSchema `json:"result,omitempty"`
+	}
+	JSON400 *N400
+	JSON401 *N401
+	JSON403 *N403
+	JSON404 *N404
+	JSON422 *N422
+	JSON500 *N500
+}
+
+// Status returns HTTPResponse.Status
+func (r PostApiV1DatasetDuplicateResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PostApiV1DatasetDuplicateResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetApiV1DatasetExportResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *N400
+	JSON401      *N401
+	JSON404      *N404
+	JSON500      *N500
+}
+
+// Status returns HTTPResponse.Status
+func (r GetApiV1DatasetExportResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetApiV1DatasetExportResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type PostApiV1DatasetGetOrCreateResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Result struct {
+			TableId int `json:"table_id,omitempty"`
+		} `json:"result,omitempty"`
+	}
+	JSON400 *N400
+	JSON401 *N401
+	JSON422 *N422
+	JSON500 *N500
+}
+
+// Status returns HTTPResponse.Status
+func (r PostApiV1DatasetGetOrCreateResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PostApiV1DatasetGetOrCreateResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type PostApiV1DatasetImportResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Message string `json:"message,omitempty"`
+	}
+	JSON400 *N400
+	JSON401 *N401
+	JSON422 *N422
+	JSON500 *N500
+}
+
+// Status returns HTTPResponse.Status
+func (r PostApiV1DatasetImportResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PostApiV1DatasetImportResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetApiV1DatasetRelatedColumnNameResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *RelatedResponseSchema
+	JSON400      *N400
+	JSON401      *N401
+	JSON404      *N404
+	JSON500      *N500
+}
+
+// Status returns HTTPResponse.Status
+func (r GetApiV1DatasetRelatedColumnNameResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetApiV1DatasetRelatedColumnNameResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type PutApiV1DatasetWarmUpCacheResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *DatasetCacheWarmUpResponseSchema
+	JSON400      *N400
+	JSON404      *N404
+	JSON500      *N500
+}
+
+// Status returns HTTPResponse.Status
+func (r PutApiV1DatasetWarmUpCacheResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PutApiV1DatasetWarmUpCacheResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteApiV1DatasetPkResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Message string `json:"message,omitempty"`
+	}
+	JSON401 *N401
+	JSON403 *N403
+	JSON404 *N404
+	JSON422 *N422
+	JSON500 *N500
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteApiV1DatasetPkResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteApiV1DatasetPkResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetApiV1DatasetPkResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		// Id The item id
+		Id     int               `json:"id,omitempty"`
+		Result DatasetRestApiGet `json:"result,omitempty"`
+	}
+	JSON400 *N400
+	JSON401 *N401
+	JSON422 *N422
+	JSON500 *N500
+}
+
+// Status returns HTTPResponse.Status
+func (r GetApiV1DatasetPkResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetApiV1DatasetPkResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type PutApiV1DatasetPkResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Id     int               `json:"id,omitempty"`
+		Result DatasetRestApiPut `json:"result,omitempty"`
+	}
+	JSON400 *N400
+	JSON401 *N401
+	JSON403 *N403
+	JSON404 *N404
+	JSON422 *N422
+	JSON500 *N500
+}
+
+// Status returns HTTPResponse.Status
+func (r PutApiV1DatasetPkResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PutApiV1DatasetPkResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteApiV1DatasetPkColumnColumnIdResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Message string `json:"message,omitempty"`
+	}
+	JSON401 *N401
+	JSON403 *N403
+	JSON404 *N404
+	JSON422 *N422
+	JSON500 *N500
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteApiV1DatasetPkColumnColumnIdResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteApiV1DatasetPkColumnColumnIdResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetApiV1DatasetPkDrillInfoResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Result map[string]interface{} `json:"result,omitempty"`
+	}
+	JSON401 *N401
+	JSON403 *N403
+	JSON404 *N404
+	JSON422 *N422
+	JSON500 *N500
+}
+
+// Status returns HTTPResponse.Status
+func (r GetApiV1DatasetPkDrillInfoResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetApiV1DatasetPkDrillInfoResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteApiV1DatasetPkMetricMetricIdResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Message string `json:"message,omitempty"`
+	}
+	JSON401 *N401
+	JSON403 *N403
+	JSON404 *N404
+	JSON422 *N422
+	JSON500 *N500
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteApiV1DatasetPkMetricMetricIdResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteApiV1DatasetPkMetricMetricIdResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type PutApiV1DatasetPkRefreshResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Message string `json:"message,omitempty"`
+	}
+	JSON401 *N401
+	JSON403 *N403
+	JSON404 *N404
+	JSON422 *N422
+	JSON500 *N500
+}
+
+// Status returns HTTPResponse.Status
+func (r PutApiV1DatasetPkRefreshResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PutApiV1DatasetPkRefreshResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetApiV1DatasetPkRelatedObjectsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *DatasetRelatedObjectsResponse
+	JSON401      *N401
+	JSON404      *N404
+	JSON500      *N500
+}
+
+// Status returns HTTPResponse.Status
+func (r GetApiV1DatasetPkRelatedObjectsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetApiV1DatasetPkRelatedObjectsResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -9894,6 +12109,217 @@ func (c *ClientWithResponses) PostApiV1DatabasePkValidateSqlWithResponse(ctx con
 		return nil, err
 	}
 	return ParsePostApiV1DatabasePkValidateSqlResponse(rsp)
+}
+
+// DeleteApiV1DatasetWithResponse request returning *DeleteApiV1DatasetResponse
+func (c *ClientWithResponses) DeleteApiV1DatasetWithResponse(ctx context.Context, params *DeleteApiV1DatasetParams, reqEditors ...RequestEditorFn) (*DeleteApiV1DatasetResponse, error) {
+	rsp, err := c.DeleteApiV1Dataset(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteApiV1DatasetResponse(rsp)
+}
+
+// GetApiV1DatasetWithResponse request returning *GetApiV1DatasetResponse
+func (c *ClientWithResponses) GetApiV1DatasetWithResponse(ctx context.Context, params *GetApiV1DatasetParams, reqEditors ...RequestEditorFn) (*GetApiV1DatasetResponse, error) {
+	rsp, err := c.GetApiV1Dataset(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetApiV1DatasetResponse(rsp)
+}
+
+// PostApiV1DatasetWithBodyWithResponse request with arbitrary body returning *PostApiV1DatasetResponse
+func (c *ClientWithResponses) PostApiV1DatasetWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostApiV1DatasetResponse, error) {
+	rsp, err := c.PostApiV1DatasetWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePostApiV1DatasetResponse(rsp)
+}
+
+func (c *ClientWithResponses) PostApiV1DatasetWithResponse(ctx context.Context, body PostApiV1DatasetJSONRequestBody, reqEditors ...RequestEditorFn) (*PostApiV1DatasetResponse, error) {
+	rsp, err := c.PostApiV1Dataset(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePostApiV1DatasetResponse(rsp)
+}
+
+// GetApiV1DatasetInfoWithResponse request returning *GetApiV1DatasetInfoResponse
+func (c *ClientWithResponses) GetApiV1DatasetInfoWithResponse(ctx context.Context, params *GetApiV1DatasetInfoParams, reqEditors ...RequestEditorFn) (*GetApiV1DatasetInfoResponse, error) {
+	rsp, err := c.GetApiV1DatasetInfo(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetApiV1DatasetInfoResponse(rsp)
+}
+
+// GetApiV1DatasetDistinctColumnNameWithResponse request returning *GetApiV1DatasetDistinctColumnNameResponse
+func (c *ClientWithResponses) GetApiV1DatasetDistinctColumnNameWithResponse(ctx context.Context, columnName string, params *GetApiV1DatasetDistinctColumnNameParams, reqEditors ...RequestEditorFn) (*GetApiV1DatasetDistinctColumnNameResponse, error) {
+	rsp, err := c.GetApiV1DatasetDistinctColumnName(ctx, columnName, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetApiV1DatasetDistinctColumnNameResponse(rsp)
+}
+
+// PostApiV1DatasetDuplicateWithBodyWithResponse request with arbitrary body returning *PostApiV1DatasetDuplicateResponse
+func (c *ClientWithResponses) PostApiV1DatasetDuplicateWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostApiV1DatasetDuplicateResponse, error) {
+	rsp, err := c.PostApiV1DatasetDuplicateWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePostApiV1DatasetDuplicateResponse(rsp)
+}
+
+func (c *ClientWithResponses) PostApiV1DatasetDuplicateWithResponse(ctx context.Context, body PostApiV1DatasetDuplicateJSONRequestBody, reqEditors ...RequestEditorFn) (*PostApiV1DatasetDuplicateResponse, error) {
+	rsp, err := c.PostApiV1DatasetDuplicate(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePostApiV1DatasetDuplicateResponse(rsp)
+}
+
+// GetApiV1DatasetExportWithResponse request returning *GetApiV1DatasetExportResponse
+func (c *ClientWithResponses) GetApiV1DatasetExportWithResponse(ctx context.Context, params *GetApiV1DatasetExportParams, reqEditors ...RequestEditorFn) (*GetApiV1DatasetExportResponse, error) {
+	rsp, err := c.GetApiV1DatasetExport(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetApiV1DatasetExportResponse(rsp)
+}
+
+// PostApiV1DatasetGetOrCreateWithBodyWithResponse request with arbitrary body returning *PostApiV1DatasetGetOrCreateResponse
+func (c *ClientWithResponses) PostApiV1DatasetGetOrCreateWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostApiV1DatasetGetOrCreateResponse, error) {
+	rsp, err := c.PostApiV1DatasetGetOrCreateWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePostApiV1DatasetGetOrCreateResponse(rsp)
+}
+
+func (c *ClientWithResponses) PostApiV1DatasetGetOrCreateWithResponse(ctx context.Context, body PostApiV1DatasetGetOrCreateJSONRequestBody, reqEditors ...RequestEditorFn) (*PostApiV1DatasetGetOrCreateResponse, error) {
+	rsp, err := c.PostApiV1DatasetGetOrCreate(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePostApiV1DatasetGetOrCreateResponse(rsp)
+}
+
+// PostApiV1DatasetImportWithBodyWithResponse request with arbitrary body returning *PostApiV1DatasetImportResponse
+func (c *ClientWithResponses) PostApiV1DatasetImportWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostApiV1DatasetImportResponse, error) {
+	rsp, err := c.PostApiV1DatasetImportWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePostApiV1DatasetImportResponse(rsp)
+}
+
+// GetApiV1DatasetRelatedColumnNameWithResponse request returning *GetApiV1DatasetRelatedColumnNameResponse
+func (c *ClientWithResponses) GetApiV1DatasetRelatedColumnNameWithResponse(ctx context.Context, columnName string, params *GetApiV1DatasetRelatedColumnNameParams, reqEditors ...RequestEditorFn) (*GetApiV1DatasetRelatedColumnNameResponse, error) {
+	rsp, err := c.GetApiV1DatasetRelatedColumnName(ctx, columnName, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetApiV1DatasetRelatedColumnNameResponse(rsp)
+}
+
+// PutApiV1DatasetWarmUpCacheWithBodyWithResponse request with arbitrary body returning *PutApiV1DatasetWarmUpCacheResponse
+func (c *ClientWithResponses) PutApiV1DatasetWarmUpCacheWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PutApiV1DatasetWarmUpCacheResponse, error) {
+	rsp, err := c.PutApiV1DatasetWarmUpCacheWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePutApiV1DatasetWarmUpCacheResponse(rsp)
+}
+
+func (c *ClientWithResponses) PutApiV1DatasetWarmUpCacheWithResponse(ctx context.Context, body PutApiV1DatasetWarmUpCacheJSONRequestBody, reqEditors ...RequestEditorFn) (*PutApiV1DatasetWarmUpCacheResponse, error) {
+	rsp, err := c.PutApiV1DatasetWarmUpCache(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePutApiV1DatasetWarmUpCacheResponse(rsp)
+}
+
+// DeleteApiV1DatasetPkWithResponse request returning *DeleteApiV1DatasetPkResponse
+func (c *ClientWithResponses) DeleteApiV1DatasetPkWithResponse(ctx context.Context, pk int, reqEditors ...RequestEditorFn) (*DeleteApiV1DatasetPkResponse, error) {
+	rsp, err := c.DeleteApiV1DatasetPk(ctx, pk, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteApiV1DatasetPkResponse(rsp)
+}
+
+// GetApiV1DatasetPkWithResponse request returning *GetApiV1DatasetPkResponse
+func (c *ClientWithResponses) GetApiV1DatasetPkWithResponse(ctx context.Context, pk int, params *GetApiV1DatasetPkParams, reqEditors ...RequestEditorFn) (*GetApiV1DatasetPkResponse, error) {
+	rsp, err := c.GetApiV1DatasetPk(ctx, pk, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetApiV1DatasetPkResponse(rsp)
+}
+
+// PutApiV1DatasetPkWithBodyWithResponse request with arbitrary body returning *PutApiV1DatasetPkResponse
+func (c *ClientWithResponses) PutApiV1DatasetPkWithBodyWithResponse(ctx context.Context, pk int, params *PutApiV1DatasetPkParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PutApiV1DatasetPkResponse, error) {
+	rsp, err := c.PutApiV1DatasetPkWithBody(ctx, pk, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePutApiV1DatasetPkResponse(rsp)
+}
+
+func (c *ClientWithResponses) PutApiV1DatasetPkWithResponse(ctx context.Context, pk int, params *PutApiV1DatasetPkParams, body PutApiV1DatasetPkJSONRequestBody, reqEditors ...RequestEditorFn) (*PutApiV1DatasetPkResponse, error) {
+	rsp, err := c.PutApiV1DatasetPk(ctx, pk, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePutApiV1DatasetPkResponse(rsp)
+}
+
+// DeleteApiV1DatasetPkColumnColumnIdWithResponse request returning *DeleteApiV1DatasetPkColumnColumnIdResponse
+func (c *ClientWithResponses) DeleteApiV1DatasetPkColumnColumnIdWithResponse(ctx context.Context, pk int, columnId int, reqEditors ...RequestEditorFn) (*DeleteApiV1DatasetPkColumnColumnIdResponse, error) {
+	rsp, err := c.DeleteApiV1DatasetPkColumnColumnId(ctx, pk, columnId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteApiV1DatasetPkColumnColumnIdResponse(rsp)
+}
+
+// GetApiV1DatasetPkDrillInfoWithResponse request returning *GetApiV1DatasetPkDrillInfoResponse
+func (c *ClientWithResponses) GetApiV1DatasetPkDrillInfoWithResponse(ctx context.Context, pk int, reqEditors ...RequestEditorFn) (*GetApiV1DatasetPkDrillInfoResponse, error) {
+	rsp, err := c.GetApiV1DatasetPkDrillInfo(ctx, pk, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetApiV1DatasetPkDrillInfoResponse(rsp)
+}
+
+// DeleteApiV1DatasetPkMetricMetricIdWithResponse request returning *DeleteApiV1DatasetPkMetricMetricIdResponse
+func (c *ClientWithResponses) DeleteApiV1DatasetPkMetricMetricIdWithResponse(ctx context.Context, pk int, metricId int, reqEditors ...RequestEditorFn) (*DeleteApiV1DatasetPkMetricMetricIdResponse, error) {
+	rsp, err := c.DeleteApiV1DatasetPkMetricMetricId(ctx, pk, metricId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteApiV1DatasetPkMetricMetricIdResponse(rsp)
+}
+
+// PutApiV1DatasetPkRefreshWithResponse request returning *PutApiV1DatasetPkRefreshResponse
+func (c *ClientWithResponses) PutApiV1DatasetPkRefreshWithResponse(ctx context.Context, pk int, reqEditors ...RequestEditorFn) (*PutApiV1DatasetPkRefreshResponse, error) {
+	rsp, err := c.PutApiV1DatasetPkRefresh(ctx, pk, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePutApiV1DatasetPkRefreshResponse(rsp)
+}
+
+// GetApiV1DatasetPkRelatedObjectsWithResponse request returning *GetApiV1DatasetPkRelatedObjectsResponse
+func (c *ClientWithResponses) GetApiV1DatasetPkRelatedObjectsWithResponse(ctx context.Context, pk int, reqEditors ...RequestEditorFn) (*GetApiV1DatasetPkRelatedObjectsResponse, error) {
+	rsp, err := c.GetApiV1DatasetPkRelatedObjects(ctx, pk, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetApiV1DatasetPkRelatedObjectsResponse(rsp)
 }
 
 // GetApiV1SecurityCsrfTokenWithResponse request returning *GetApiV1SecurityCsrfTokenResponse
@@ -12191,6 +14617,1160 @@ func ParsePostApiV1DatabasePkValidateSqlResponse(rsp *http.Response) (*PostApiV1
 			return nil, err
 		}
 		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest N401
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest N404
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest N500
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteApiV1DatasetResponse parses an HTTP response from a DeleteApiV1DatasetWithResponse call
+func ParseDeleteApiV1DatasetResponse(rsp *http.Response) (*DeleteApiV1DatasetResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteApiV1DatasetResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Message string `json:"message,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest N401
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest N403
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest N404
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest N422
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest N500
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetApiV1DatasetResponse parses an HTTP response from a GetApiV1DatasetWithResponse call
+func ParseGetApiV1DatasetResponse(rsp *http.Response) (*GetApiV1DatasetResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetApiV1DatasetResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// Count The total record count on the backend
+			Count              float32 `json:"count,omitempty"`
+			DescriptionColumns struct {
+				// ColumnName The description for the column name. Will be translated by babel
+				ColumnName string `json:"column_name,omitempty"`
+			} `json:"description_columns,omitempty"`
+
+			// Ids A list of item ids, useful when you don't know the column id
+			Ids          []int `json:"ids,omitempty"`
+			LabelColumns struct {
+				// ColumnName The label for the column name. Will be translated by babel
+				ColumnName string `json:"column_name,omitempty"`
+			} `json:"label_columns,omitempty"`
+
+			// ListColumns A list of columns
+			ListColumns []string `json:"list_columns,omitempty"`
+
+			// ListTitle A title to render. Will be translated by babel
+			ListTitle string `json:"list_title,omitempty"`
+
+			// OrderColumns A list of allowed columns to sort
+			OrderColumns []string `json:"order_columns,omitempty"`
+
+			// Result The result from the get list query
+			Result []DatasetRestApiGetList `json:"result,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest N401
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest N422
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest N500
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParsePostApiV1DatasetResponse parses an HTTP response from a PostApiV1DatasetWithResponse call
+func ParsePostApiV1DatasetResponse(rsp *http.Response) (*PostApiV1DatasetResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PostApiV1DatasetResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest struct {
+			Id     int                `json:"id,omitempty"`
+			Result DatasetRestApiPost `json:"result,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest N401
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest N422
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest N500
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetApiV1DatasetInfoResponse parses an HTTP response from a GetApiV1DatasetInfoWithResponse call
+func ParseGetApiV1DatasetInfoResponse(rsp *http.Response) (*GetApiV1DatasetInfoResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetApiV1DatasetInfoResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			AddColumns  map[string]interface{} `json:"add_columns,omitempty"`
+			EditColumns map[string]interface{} `json:"edit_columns,omitempty"`
+			Filters     struct {
+				ColumnName []struct {
+					// Name The filter name. Will be translated by babel
+					Name string `json:"name,omitempty"`
+
+					// Operator The filter operation key to use on list filters
+					Operator string `json:"operator,omitempty"`
+				} `json:"column_name,omitempty"`
+			} `json:"filters,omitempty"`
+
+			// Permissions The user permissions for this API resource
+			Permissions []string `json:"permissions,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest N401
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest N422
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest N500
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetApiV1DatasetDistinctColumnNameResponse parses an HTTP response from a GetApiV1DatasetDistinctColumnNameWithResponse call
+func ParseGetApiV1DatasetDistinctColumnNameResponse(rsp *http.Response) (*GetApiV1DatasetDistinctColumnNameResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetApiV1DatasetDistinctColumnNameResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest DistincResponseSchema
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest N401
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest N404
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest N500
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParsePostApiV1DatasetDuplicateResponse parses an HTTP response from a PostApiV1DatasetDuplicateWithResponse call
+func ParsePostApiV1DatasetDuplicateResponse(rsp *http.Response) (*PostApiV1DatasetDuplicateResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PostApiV1DatasetDuplicateResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest struct {
+			Id     int                    `json:"id,omitempty"`
+			Result DatasetDuplicateSchema `json:"result,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest N401
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest N403
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest N404
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest N422
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest N500
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetApiV1DatasetExportResponse parses an HTTP response from a GetApiV1DatasetExportWithResponse call
+func ParseGetApiV1DatasetExportResponse(rsp *http.Response) (*GetApiV1DatasetExportResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetApiV1DatasetExportResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest N401
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest N404
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest N500
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParsePostApiV1DatasetGetOrCreateResponse parses an HTTP response from a PostApiV1DatasetGetOrCreateWithResponse call
+func ParsePostApiV1DatasetGetOrCreateResponse(rsp *http.Response) (*PostApiV1DatasetGetOrCreateResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PostApiV1DatasetGetOrCreateResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Result struct {
+				TableId int `json:"table_id,omitempty"`
+			} `json:"result,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest N401
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest N422
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest N500
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParsePostApiV1DatasetImportResponse parses an HTTP response from a PostApiV1DatasetImportWithResponse call
+func ParsePostApiV1DatasetImportResponse(rsp *http.Response) (*PostApiV1DatasetImportResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PostApiV1DatasetImportResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Message string `json:"message,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest N401
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest N422
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest N500
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetApiV1DatasetRelatedColumnNameResponse parses an HTTP response from a GetApiV1DatasetRelatedColumnNameWithResponse call
+func ParseGetApiV1DatasetRelatedColumnNameResponse(rsp *http.Response) (*GetApiV1DatasetRelatedColumnNameResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetApiV1DatasetRelatedColumnNameResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest RelatedResponseSchema
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest N401
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest N404
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest N500
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParsePutApiV1DatasetWarmUpCacheResponse parses an HTTP response from a PutApiV1DatasetWarmUpCacheWithResponse call
+func ParsePutApiV1DatasetWarmUpCacheResponse(rsp *http.Response) (*PutApiV1DatasetWarmUpCacheResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PutApiV1DatasetWarmUpCacheResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest DatasetCacheWarmUpResponseSchema
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest N404
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest N500
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteApiV1DatasetPkResponse parses an HTTP response from a DeleteApiV1DatasetPkWithResponse call
+func ParseDeleteApiV1DatasetPkResponse(rsp *http.Response) (*DeleteApiV1DatasetPkResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteApiV1DatasetPkResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Message string `json:"message,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest N401
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest N403
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest N404
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest N422
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest N500
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetApiV1DatasetPkResponse parses an HTTP response from a GetApiV1DatasetPkWithResponse call
+func ParseGetApiV1DatasetPkResponse(rsp *http.Response) (*GetApiV1DatasetPkResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetApiV1DatasetPkResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// Id The item id
+			Id     int               `json:"id,omitempty"`
+			Result DatasetRestApiGet `json:"result,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest N401
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest N422
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest N500
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParsePutApiV1DatasetPkResponse parses an HTTP response from a PutApiV1DatasetPkWithResponse call
+func ParsePutApiV1DatasetPkResponse(rsp *http.Response) (*PutApiV1DatasetPkResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PutApiV1DatasetPkResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Id     int               `json:"id,omitempty"`
+			Result DatasetRestApiPut `json:"result,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest N401
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest N403
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest N404
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest N422
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest N500
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteApiV1DatasetPkColumnColumnIdResponse parses an HTTP response from a DeleteApiV1DatasetPkColumnColumnIdWithResponse call
+func ParseDeleteApiV1DatasetPkColumnColumnIdResponse(rsp *http.Response) (*DeleteApiV1DatasetPkColumnColumnIdResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteApiV1DatasetPkColumnColumnIdResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Message string `json:"message,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest N401
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest N403
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest N404
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest N422
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest N500
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetApiV1DatasetPkDrillInfoResponse parses an HTTP response from a GetApiV1DatasetPkDrillInfoWithResponse call
+func ParseGetApiV1DatasetPkDrillInfoResponse(rsp *http.Response) (*GetApiV1DatasetPkDrillInfoResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetApiV1DatasetPkDrillInfoResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Result map[string]interface{} `json:"result,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest N401
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest N403
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest N404
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest N422
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest N500
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteApiV1DatasetPkMetricMetricIdResponse parses an HTTP response from a DeleteApiV1DatasetPkMetricMetricIdWithResponse call
+func ParseDeleteApiV1DatasetPkMetricMetricIdResponse(rsp *http.Response) (*DeleteApiV1DatasetPkMetricMetricIdResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteApiV1DatasetPkMetricMetricIdResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Message string `json:"message,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest N401
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest N403
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest N404
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest N422
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest N500
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParsePutApiV1DatasetPkRefreshResponse parses an HTTP response from a PutApiV1DatasetPkRefreshWithResponse call
+func ParsePutApiV1DatasetPkRefreshResponse(rsp *http.Response) (*PutApiV1DatasetPkRefreshResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PutApiV1DatasetPkRefreshResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Message string `json:"message,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest N401
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest N403
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest N404
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest N422
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest N500
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetApiV1DatasetPkRelatedObjectsResponse parses an HTTP response from a GetApiV1DatasetPkRelatedObjectsWithResponse call
+func ParseGetApiV1DatasetPkRelatedObjectsResponse(rsp *http.Response) (*GetApiV1DatasetPkRelatedObjectsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetApiV1DatasetPkRelatedObjectsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest DatasetRelatedObjectsResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest N401
