@@ -159,6 +159,7 @@ func (p *SupersetProvider) Resources(ctx context.Context) []func() resource.Reso
 		NewRolePermissionsResource,
 		NewGroupResource,
 		NewGroupRoleBindingResource,
+		NewTagResource,
 	}
 }
 

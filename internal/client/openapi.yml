@@ -8620,7 +8620,6 @@ components:
           type: integer
         name:
           maxLength: 250
-          nullable: true
           type: string
         type:
           enum:
@@ -8670,7 +8669,6 @@ components:
           type: integer
         name:
           maxLength: 250
-          nullable: true
           type: string
         type:
           enum:
@@ -19634,7 +19632,7 @@ paths:
                   ids:
                     description: A list of item ids, useful when you don't know the column id
                     items:
-                      type: string
+                      type: integer
                     type: array
                   label_columns:
                     properties:
@@ -19693,7 +19691,7 @@ paths:
               schema:
                 properties:
                   id:
-                    type: number
+                    type: integer
                   result:
                     $ref: '#/components/schemas/TagRestApi.post'
                 type: object
@@ -20043,7 +20041,7 @@ paths:
                     type: object
                   id:
                     description: The item id
-                    type: string
+                    type: integer
                   label_columns:
                     properties:
                       column_name:
@@ -20101,7 +20099,7 @@ paths:
               schema:
                 properties:
                   id:
-                    type: number
+                    type: integer
                   result:
                     $ref: '#/components/schemas/TagRestApi.put'
                 type: object

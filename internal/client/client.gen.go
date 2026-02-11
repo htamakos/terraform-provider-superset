@@ -103,6 +103,15 @@ type CatalogsResponseSchema struct {
 	Result []string `json:"result,omitempty"`
 }
 
+// ChartFavStarResponseResult defines model for ChartFavStarResponseResult.
+type ChartFavStarResponseResult struct {
+	// Id The Chart id
+	Id int `json:"id,omitempty"`
+
+	// Value The FaveStar value
+	Value bool `json:"value,omitempty"`
+}
+
 // DatabaseConnectionSchema defines model for DatabaseConnectionSchema.
 type DatabaseConnectionSchema struct {
 	// AllowCtas Allow CREATE TABLE AS option in SQL Lab
@@ -502,6 +511,12 @@ type Folder struct {
 
 // FolderType defines model for Folder.Type.
 type FolderType string
+
+// GetFavStarIdsSchema defines model for GetFavStarIdsSchema.
+type GetFavStarIdsSchema struct {
+	// Result A list of results for each corresponding chart in the request
+	Result []ChartFavStarResponseResult `json:"result,omitempty"`
+}
 
 // GroupApiGet defines model for GroupApi.get.
 type GroupApiGet struct {
@@ -948,6 +963,120 @@ type TableMetadataResponseSchema struct {
 	SelectStar string `json:"selectStar,omitempty"`
 }
 
+// TagGetResponseSchema defines model for TagGetResponseSchema.
+type TagGetResponseSchema struct {
+	Id   int    `json:"id,omitempty"`
+	Name string `json:"name,omitempty"`
+	Type string `json:"type,omitempty"`
+}
+
+// TagObject defines model for TagObject.
+type TagObject struct {
+	Description nullable.Nullable[string] `json:"description,omitempty"`
+	Name        string                    `json:"name,omitempty"`
+
+	// ObjectsToTag Objects to tag
+	ObjectsToTag []interface{} `json:"objects_to_tag,omitempty"`
+}
+
+// TagPostBulkResponseObject defines model for TagPostBulkResponseObject.
+type TagPostBulkResponseObject struct {
+	// ObjectsSkipped Objects to tag
+	ObjectsSkipped []interface{} `json:"objects_skipped,omitempty"`
+
+	// ObjectsTagged Objects to tag
+	ObjectsTagged []interface{} `json:"objects_tagged,omitempty"`
+}
+
+// TagPostBulkResponseSchema defines model for TagPostBulkResponseSchema.
+type TagPostBulkResponseSchema struct {
+	Result TagPostBulkResponseObject `json:"result,omitempty"`
+}
+
+// TagPostBulkSchema defines model for TagPostBulkSchema.
+type TagPostBulkSchema struct {
+	Tags []TagObject `json:"tags,omitempty"`
+}
+
+// TagRestApiGet defines model for TagRestApi.get.
+type TagRestApiGet struct {
+	ChangedBy               TagRestApiGetUser         `json:"changed_by,omitempty"`
+	ChangedOnDeltaHumanized interface{}               `json:"changed_on_delta_humanized,omitempty"`
+	CreatedBy               TagRestApiGetUser1        `json:"created_by,omitempty"`
+	CreatedOnDeltaHumanized interface{}               `json:"created_on_delta_humanized,omitempty"`
+	Description             nullable.Nullable[string] `json:"description,omitempty"`
+	Id                      int                       `json:"id,omitempty"`
+	Name                    string                    `json:"name,omitempty"`
+	Type                    interface{}               `json:"type,omitempty"`
+}
+
+// TagRestApiGetUser defines model for TagRestApi.get.User.
+type TagRestApiGetUser struct {
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+}
+
+// TagRestApiGetUser1 defines model for TagRestApi.get.User1.
+type TagRestApiGetUser1 struct {
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+}
+
+// TagRestApiGetList defines model for TagRestApi.get_list.
+type TagRestApiGetList struct {
+	ChangedBy               TagRestApiGetListUser     `json:"changed_by,omitempty"`
+	ChangedOnDeltaHumanized interface{}               `json:"changed_on_delta_humanized,omitempty"`
+	CreatedBy               TagRestApiGetListUser1    `json:"created_by,omitempty"`
+	CreatedOnDeltaHumanized interface{}               `json:"created_on_delta_humanized,omitempty"`
+	Description             nullable.Nullable[string] `json:"description,omitempty"`
+	Id                      int                       `json:"id,omitempty"`
+	Name                    string                    `json:"name,omitempty"`
+	Type                    interface{}               `json:"type,omitempty"`
+}
+
+// TagRestApiGetListUser defines model for TagRestApi.get_list.User.
+type TagRestApiGetListUser struct {
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+}
+
+// TagRestApiGetListUser1 defines model for TagRestApi.get_list.User1.
+type TagRestApiGetListUser1 struct {
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+}
+
+// TagRestApiPost defines model for TagRestApi.post.
+type TagRestApiPost struct {
+	Description nullable.Nullable[string] `json:"description,omitempty"`
+	Name        string                    `json:"name,omitempty"`
+
+	// ObjectsToTag Objects to tag
+	ObjectsToTag []interface{} `json:"objects_to_tag,omitempty"`
+}
+
+// TagRestApiPut defines model for TagRestApi.put.
+type TagRestApiPut struct {
+	Description nullable.Nullable[string] `json:"description,omitempty"`
+	Name        string                    `json:"name,omitempty"`
+
+	// ObjectsToTag Objects to tag
+	ObjectsToTag []interface{} `json:"objects_to_tag,omitempty"`
+}
+
+// TaggedObjectEntityResponseSchema defines model for TaggedObjectEntityResponseSchema.
+type TaggedObjectEntityResponseSchema struct {
+	ChangedOn string                 `json:"changed_on,omitempty"`
+	CreatedBy User1                  `json:"created_by,omitempty"`
+	Creator   string                 `json:"creator,omitempty"`
+	Id        int                    `json:"id,omitempty"`
+	Name      string                 `json:"name,omitempty"`
+	Owners    []User2                `json:"owners,omitempty"`
+	Tags      []TagGetResponseSchema `json:"tags,omitempty"`
+	Type      string                 `json:"type,omitempty"`
+	Url       string                 `json:"url,omitempty"`
+}
+
 // UploadFileMetadata defines model for UploadFileMetadata.
 type UploadFileMetadata struct {
 	Items []UploadFileMetadataItem `json:"items,omitempty"`
@@ -1046,6 +1175,21 @@ type UploadPostSchema struct {
 // UploadPostSchemaAlreadyExists What to do if the table already exists accepts: fail, replace, append
 type UploadPostSchemaAlreadyExists string
 
+// User1 defines model for User1.
+type User1 struct {
+	FirstName string `json:"first_name,omitempty"`
+	Id        int    `json:"id,omitempty"`
+	LastName  string `json:"last_name,omitempty"`
+}
+
+// User2 defines model for User2.
+type User2 struct {
+	FirstName string `json:"first_name,omitempty"`
+	Id        int    `json:"id,omitempty"`
+	LastName  string `json:"last_name,omitempty"`
+	Username  string `json:"username,omitempty"`
+}
+
 // User3 defines model for User3.
 type User3 struct {
 	FirstName string `json:"first_name,omitempty"`
@@ -1090,8 +1234,14 @@ type DatabaseTablesQuerySchema struct {
 	SchemaName  string `json:"schema_name"`
 }
 
+// DeleteTagsSchema defines model for delete_tags_schema.
+type DeleteTagsSchema = []string
+
 // GetExportIdsSchema defines model for get_export_ids_schema.
 type GetExportIdsSchema = []int
+
+// GetFavStarIdsOnlySchema defines model for get_fav_star_ids_only_schema.
+type GetFavStarIdsOnlySchema = []int
 
 // GetInfoSchema defines model for get_info_schema.
 type GetInfoSchema struct {
@@ -1398,6 +1548,48 @@ type GetApiV1SecurityUsersPkParams struct {
 	Q GetItemSchema `form:"q,omitempty" json:"q,omitempty"`
 }
 
+// DeleteApiV1TagParams defines parameters for DeleteApiV1Tag.
+type DeleteApiV1TagParams struct {
+	Q DeleteTagsSchema `form:"q,omitempty" json:"q,omitempty"`
+}
+
+// GetApiV1TagParams defines parameters for GetApiV1Tag.
+type GetApiV1TagParams struct {
+	Q GetListSchema `form:"q,omitempty" json:"q,omitempty"`
+}
+
+// GetApiV1TagInfoParams defines parameters for GetApiV1TagInfo.
+type GetApiV1TagInfoParams struct {
+	Q GetInfoSchema `form:"q,omitempty" json:"q,omitempty"`
+}
+
+// GetApiV1TagFavoriteStatusParams defines parameters for GetApiV1TagFavoriteStatus.
+type GetApiV1TagFavoriteStatusParams struct {
+	Q GetFavStarIdsOnlySchema `form:"q,omitempty" json:"q,omitempty"`
+}
+
+// GetApiV1TagGetObjectsParams defines parameters for GetApiV1TagGetObjects.
+type GetApiV1TagGetObjectsParams struct {
+	TagIds string `form:"tagIds,omitempty" json:"tagIds,omitempty"`
+	Types  string `form:"types,omitempty" json:"types,omitempty"`
+}
+
+// GetApiV1TagRelatedColumnNameParams defines parameters for GetApiV1TagRelatedColumnName.
+type GetApiV1TagRelatedColumnNameParams struct {
+	Q GetRelatedSchema `form:"q,omitempty" json:"q,omitempty"`
+}
+
+// PostApiV1TagObjectTypeObjectIdJSONBody defines parameters for PostApiV1TagObjectTypeObjectId.
+type PostApiV1TagObjectTypeObjectIdJSONBody struct {
+	// Tags list of tag names to add to object
+	Tags []string `json:"tags,omitempty"`
+}
+
+// GetApiV1TagPkParams defines parameters for GetApiV1TagPk.
+type GetApiV1TagPkParams struct {
+	Q GetItemSchema `form:"q,omitempty" json:"q,omitempty"`
+}
+
 // PostApiV1DatabaseJSONRequestBody defines body for PostApiV1Database for application/json ContentType.
 type PostApiV1DatabaseJSONRequestBody = DatabaseRestApiPost
 
@@ -1460,6 +1652,18 @@ type PostApiV1SecurityUsersJSONRequestBody = SupersetUserApiPost
 
 // PutApiV1SecurityUsersPkJSONRequestBody defines body for PutApiV1SecurityUsersPk for application/json ContentType.
 type PutApiV1SecurityUsersPkJSONRequestBody = SupersetUserApiPut
+
+// PostApiV1TagJSONRequestBody defines body for PostApiV1Tag for application/json ContentType.
+type PostApiV1TagJSONRequestBody = TagRestApiPost
+
+// PostApiV1TagBulkCreateJSONRequestBody defines body for PostApiV1TagBulkCreate for application/json ContentType.
+type PostApiV1TagBulkCreateJSONRequestBody = TagPostBulkSchema
+
+// PostApiV1TagObjectTypeObjectIdJSONRequestBody defines body for PostApiV1TagObjectTypeObjectId for application/json ContentType.
+type PostApiV1TagObjectTypeObjectIdJSONRequestBody PostApiV1TagObjectTypeObjectIdJSONBody
+
+// PutApiV1TagPkJSONRequestBody defines body for PutApiV1TagPk for application/json ContentType.
+type PutApiV1TagPkJSONRequestBody = TagRestApiPut
 
 // AsGetListSchemaFiltersValue30 returns the union data inside the GetListSchema_Filters_Value_3_Item as a GetListSchemaFiltersValue30
 func (t GetListSchema_Filters_Value_3_Item) AsGetListSchemaFiltersValue30() (GetListSchemaFiltersValue30, error) {
@@ -1963,6 +2167,59 @@ type ClientInterface interface {
 	PutApiV1SecurityUsersPkWithBody(ctx context.Context, pk int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	PutApiV1SecurityUsersPk(ctx context.Context, pk int, body PutApiV1SecurityUsersPkJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteApiV1Tag request
+	DeleteApiV1Tag(ctx context.Context, params *DeleteApiV1TagParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetApiV1Tag request
+	GetApiV1Tag(ctx context.Context, params *GetApiV1TagParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PostApiV1TagWithBody request with any body
+	PostApiV1TagWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	PostApiV1Tag(ctx context.Context, body PostApiV1TagJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetApiV1TagInfo request
+	GetApiV1TagInfo(ctx context.Context, params *GetApiV1TagInfoParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PostApiV1TagBulkCreateWithBody request with any body
+	PostApiV1TagBulkCreateWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	PostApiV1TagBulkCreate(ctx context.Context, body PostApiV1TagBulkCreateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetApiV1TagFavoriteStatus request
+	GetApiV1TagFavoriteStatus(ctx context.Context, params *GetApiV1TagFavoriteStatusParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetApiV1TagGetObjects request
+	GetApiV1TagGetObjects(ctx context.Context, params *GetApiV1TagGetObjectsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetApiV1TagRelatedColumnName request
+	GetApiV1TagRelatedColumnName(ctx context.Context, columnName string, params *GetApiV1TagRelatedColumnNameParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PostApiV1TagObjectTypeObjectIdWithBody request with any body
+	PostApiV1TagObjectTypeObjectIdWithBody(ctx context.Context, objectType int, objectId int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	PostApiV1TagObjectTypeObjectId(ctx context.Context, objectType int, objectId int, body PostApiV1TagObjectTypeObjectIdJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteApiV1TagObjectTypeObjectIdTag request
+	DeleteApiV1TagObjectTypeObjectIdTag(ctx context.Context, objectType int, objectId int, tag string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteApiV1TagPk request
+	DeleteApiV1TagPk(ctx context.Context, pk int, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetApiV1TagPk request
+	GetApiV1TagPk(ctx context.Context, pk int, params *GetApiV1TagPkParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PutApiV1TagPkWithBody request with any body
+	PutApiV1TagPkWithBody(ctx context.Context, pk int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	PutApiV1TagPk(ctx context.Context, pk int, body PutApiV1TagPkJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteApiV1TagPkFavorites request
+	DeleteApiV1TagPkFavorites(ctx context.Context, pk int, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PostApiV1TagPkFavorites request
+	PostApiV1TagPkFavorites(ctx context.Context, pk int, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
 
 func (c *Client) GetApiV1Database(ctx context.Context, params *GetApiV1DatabaseParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -2939,6 +3196,234 @@ func (c *Client) PutApiV1SecurityUsersPkWithBody(ctx context.Context, pk int, co
 
 func (c *Client) PutApiV1SecurityUsersPk(ctx context.Context, pk int, body PutApiV1SecurityUsersPkJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewPutApiV1SecurityUsersPkRequest(c.Server, pk, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteApiV1Tag(ctx context.Context, params *DeleteApiV1TagParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteApiV1TagRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetApiV1Tag(ctx context.Context, params *GetApiV1TagParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetApiV1TagRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) PostApiV1TagWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostApiV1TagRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) PostApiV1Tag(ctx context.Context, body PostApiV1TagJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostApiV1TagRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetApiV1TagInfo(ctx context.Context, params *GetApiV1TagInfoParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetApiV1TagInfoRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) PostApiV1TagBulkCreateWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostApiV1TagBulkCreateRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) PostApiV1TagBulkCreate(ctx context.Context, body PostApiV1TagBulkCreateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostApiV1TagBulkCreateRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetApiV1TagFavoriteStatus(ctx context.Context, params *GetApiV1TagFavoriteStatusParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetApiV1TagFavoriteStatusRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetApiV1TagGetObjects(ctx context.Context, params *GetApiV1TagGetObjectsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetApiV1TagGetObjectsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetApiV1TagRelatedColumnName(ctx context.Context, columnName string, params *GetApiV1TagRelatedColumnNameParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetApiV1TagRelatedColumnNameRequest(c.Server, columnName, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) PostApiV1TagObjectTypeObjectIdWithBody(ctx context.Context, objectType int, objectId int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostApiV1TagObjectTypeObjectIdRequestWithBody(c.Server, objectType, objectId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) PostApiV1TagObjectTypeObjectId(ctx context.Context, objectType int, objectId int, body PostApiV1TagObjectTypeObjectIdJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostApiV1TagObjectTypeObjectIdRequest(c.Server, objectType, objectId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteApiV1TagObjectTypeObjectIdTag(ctx context.Context, objectType int, objectId int, tag string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteApiV1TagObjectTypeObjectIdTagRequest(c.Server, objectType, objectId, tag)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteApiV1TagPk(ctx context.Context, pk int, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteApiV1TagPkRequest(c.Server, pk)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetApiV1TagPk(ctx context.Context, pk int, params *GetApiV1TagPkParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetApiV1TagPkRequest(c.Server, pk, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) PutApiV1TagPkWithBody(ctx context.Context, pk int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPutApiV1TagPkRequestWithBody(c.Server, pk, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) PutApiV1TagPk(ctx context.Context, pk int, body PutApiV1TagPkJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPutApiV1TagPkRequest(c.Server, pk, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteApiV1TagPkFavorites(ctx context.Context, pk int, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteApiV1TagPkFavoritesRequest(c.Server, pk)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) PostApiV1TagPkFavorites(ctx context.Context, pk int, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostApiV1TagPkFavoritesRequest(c.Server, pk)
 	if err != nil {
 		return nil, err
 	}
@@ -5609,6 +6094,642 @@ func NewPutApiV1SecurityUsersPkRequestWithBody(server string, pk int, contentTyp
 	return req, nil
 }
 
+// NewDeleteApiV1TagRequest generates requests for DeleteApiV1Tag
+func NewDeleteApiV1TagRequest(server string, params *DeleteApiV1TagParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tag/")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryParamBuf, err := json.Marshal(params.Q); err != nil {
+			return nil, err
+		} else {
+			queryValues.Add("q", string(queryParamBuf))
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetApiV1TagRequest generates requests for GetApiV1Tag
+func NewGetApiV1TagRequest(server string, params *GetApiV1TagParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tag/")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryParamBuf, err := json.Marshal(params.Q); err != nil {
+			return nil, err
+		} else {
+			queryValues.Add("q", string(queryParamBuf))
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewPostApiV1TagRequest calls the generic PostApiV1Tag builder with application/json body
+func NewPostApiV1TagRequest(server string, body PostApiV1TagJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPostApiV1TagRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewPostApiV1TagRequestWithBody generates requests for PostApiV1Tag with any type of body
+func NewPostApiV1TagRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tag/")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetApiV1TagInfoRequest generates requests for GetApiV1TagInfo
+func NewGetApiV1TagInfoRequest(server string, params *GetApiV1TagInfoParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tag/_info")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryParamBuf, err := json.Marshal(params.Q); err != nil {
+			return nil, err
+		} else {
+			queryValues.Add("q", string(queryParamBuf))
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewPostApiV1TagBulkCreateRequest calls the generic PostApiV1TagBulkCreate builder with application/json body
+func NewPostApiV1TagBulkCreateRequest(server string, body PostApiV1TagBulkCreateJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPostApiV1TagBulkCreateRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewPostApiV1TagBulkCreateRequestWithBody generates requests for PostApiV1TagBulkCreate with any type of body
+func NewPostApiV1TagBulkCreateRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tag/bulk_create")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetApiV1TagFavoriteStatusRequest generates requests for GetApiV1TagFavoriteStatus
+func NewGetApiV1TagFavoriteStatusRequest(server string, params *GetApiV1TagFavoriteStatusParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tag/favorite_status/")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryParamBuf, err := json.Marshal(params.Q); err != nil {
+			return nil, err
+		} else {
+			queryValues.Add("q", string(queryParamBuf))
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetApiV1TagGetObjectsRequest generates requests for GetApiV1TagGetObjects
+func NewGetApiV1TagGetObjectsRequest(server string, params *GetApiV1TagGetObjectsParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tag/get_objects/")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "tagIds", runtime.ParamLocationQuery, params.TagIds); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "types", runtime.ParamLocationQuery, params.Types); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetApiV1TagRelatedColumnNameRequest generates requests for GetApiV1TagRelatedColumnName
+func NewGetApiV1TagRelatedColumnNameRequest(server string, columnName string, params *GetApiV1TagRelatedColumnNameParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "column_name", runtime.ParamLocationPath, columnName)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tag/related/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryParamBuf, err := json.Marshal(params.Q); err != nil {
+			return nil, err
+		} else {
+			queryValues.Add("q", string(queryParamBuf))
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewPostApiV1TagObjectTypeObjectIdRequest calls the generic PostApiV1TagObjectTypeObjectId builder with application/json body
+func NewPostApiV1TagObjectTypeObjectIdRequest(server string, objectType int, objectId int, body PostApiV1TagObjectTypeObjectIdJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPostApiV1TagObjectTypeObjectIdRequestWithBody(server, objectType, objectId, "application/json", bodyReader)
+}
+
+// NewPostApiV1TagObjectTypeObjectIdRequestWithBody generates requests for PostApiV1TagObjectTypeObjectId with any type of body
+func NewPostApiV1TagObjectTypeObjectIdRequestWithBody(server string, objectType int, objectId int, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "object_type", runtime.ParamLocationPath, objectType)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "object_id", runtime.ParamLocationPath, objectId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tag/%s/%s/", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteApiV1TagObjectTypeObjectIdTagRequest generates requests for DeleteApiV1TagObjectTypeObjectIdTag
+func NewDeleteApiV1TagObjectTypeObjectIdTagRequest(server string, objectType int, objectId int, tag string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "object_type", runtime.ParamLocationPath, objectType)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "object_id", runtime.ParamLocationPath, objectId)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "tag", runtime.ParamLocationPath, tag)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tag/%s/%s/%s/", pathParam0, pathParam1, pathParam2)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewDeleteApiV1TagPkRequest generates requests for DeleteApiV1TagPk
+func NewDeleteApiV1TagPkRequest(server string, pk int) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "pk", runtime.ParamLocationPath, pk)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tag/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetApiV1TagPkRequest generates requests for GetApiV1TagPk
+func NewGetApiV1TagPkRequest(server string, pk int, params *GetApiV1TagPkParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "pk", runtime.ParamLocationPath, pk)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tag/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryParamBuf, err := json.Marshal(params.Q); err != nil {
+			return nil, err
+		} else {
+			queryValues.Add("q", string(queryParamBuf))
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewPutApiV1TagPkRequest calls the generic PutApiV1TagPk builder with application/json body
+func NewPutApiV1TagPkRequest(server string, pk int, body PutApiV1TagPkJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPutApiV1TagPkRequestWithBody(server, pk, "application/json", bodyReader)
+}
+
+// NewPutApiV1TagPkRequestWithBody generates requests for PutApiV1TagPk with any type of body
+func NewPutApiV1TagPkRequestWithBody(server string, pk int, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "pk", runtime.ParamLocationPath, pk)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tag/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteApiV1TagPkFavoritesRequest generates requests for DeleteApiV1TagPkFavorites
+func NewDeleteApiV1TagPkFavoritesRequest(server string, pk int) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "pk", runtime.ParamLocationPath, pk)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tag/%s/favorites/", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewPostApiV1TagPkFavoritesRequest generates requests for PostApiV1TagPkFavorites
+func NewPostApiV1TagPkFavoritesRequest(server string, pk int) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "pk", runtime.ParamLocationPath, pk)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tag/%s/favorites/", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 func (c *Client) applyEditors(ctx context.Context, req *http.Request, additionalEditors []RequestEditorFn) error {
 	for _, r := range c.RequestEditors {
 		if err := r(ctx, req); err != nil {
@@ -5879,6 +7000,59 @@ type ClientWithResponsesInterface interface {
 	PutApiV1SecurityUsersPkWithBodyWithResponse(ctx context.Context, pk int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PutApiV1SecurityUsersPkResponse, error)
 
 	PutApiV1SecurityUsersPkWithResponse(ctx context.Context, pk int, body PutApiV1SecurityUsersPkJSONRequestBody, reqEditors ...RequestEditorFn) (*PutApiV1SecurityUsersPkResponse, error)
+
+	// DeleteApiV1TagWithResponse request
+	DeleteApiV1TagWithResponse(ctx context.Context, params *DeleteApiV1TagParams, reqEditors ...RequestEditorFn) (*DeleteApiV1TagResponse, error)
+
+	// GetApiV1TagWithResponse request
+	GetApiV1TagWithResponse(ctx context.Context, params *GetApiV1TagParams, reqEditors ...RequestEditorFn) (*GetApiV1TagResponse, error)
+
+	// PostApiV1TagWithBodyWithResponse request with any body
+	PostApiV1TagWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostApiV1TagResponse, error)
+
+	PostApiV1TagWithResponse(ctx context.Context, body PostApiV1TagJSONRequestBody, reqEditors ...RequestEditorFn) (*PostApiV1TagResponse, error)
+
+	// GetApiV1TagInfoWithResponse request
+	GetApiV1TagInfoWithResponse(ctx context.Context, params *GetApiV1TagInfoParams, reqEditors ...RequestEditorFn) (*GetApiV1TagInfoResponse, error)
+
+	// PostApiV1TagBulkCreateWithBodyWithResponse request with any body
+	PostApiV1TagBulkCreateWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostApiV1TagBulkCreateResponse, error)
+
+	PostApiV1TagBulkCreateWithResponse(ctx context.Context, body PostApiV1TagBulkCreateJSONRequestBody, reqEditors ...RequestEditorFn) (*PostApiV1TagBulkCreateResponse, error)
+
+	// GetApiV1TagFavoriteStatusWithResponse request
+	GetApiV1TagFavoriteStatusWithResponse(ctx context.Context, params *GetApiV1TagFavoriteStatusParams, reqEditors ...RequestEditorFn) (*GetApiV1TagFavoriteStatusResponse, error)
+
+	// GetApiV1TagGetObjectsWithResponse request
+	GetApiV1TagGetObjectsWithResponse(ctx context.Context, params *GetApiV1TagGetObjectsParams, reqEditors ...RequestEditorFn) (*GetApiV1TagGetObjectsResponse, error)
+
+	// GetApiV1TagRelatedColumnNameWithResponse request
+	GetApiV1TagRelatedColumnNameWithResponse(ctx context.Context, columnName string, params *GetApiV1TagRelatedColumnNameParams, reqEditors ...RequestEditorFn) (*GetApiV1TagRelatedColumnNameResponse, error)
+
+	// PostApiV1TagObjectTypeObjectIdWithBodyWithResponse request with any body
+	PostApiV1TagObjectTypeObjectIdWithBodyWithResponse(ctx context.Context, objectType int, objectId int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostApiV1TagObjectTypeObjectIdResponse, error)
+
+	PostApiV1TagObjectTypeObjectIdWithResponse(ctx context.Context, objectType int, objectId int, body PostApiV1TagObjectTypeObjectIdJSONRequestBody, reqEditors ...RequestEditorFn) (*PostApiV1TagObjectTypeObjectIdResponse, error)
+
+	// DeleteApiV1TagObjectTypeObjectIdTagWithResponse request
+	DeleteApiV1TagObjectTypeObjectIdTagWithResponse(ctx context.Context, objectType int, objectId int, tag string, reqEditors ...RequestEditorFn) (*DeleteApiV1TagObjectTypeObjectIdTagResponse, error)
+
+	// DeleteApiV1TagPkWithResponse request
+	DeleteApiV1TagPkWithResponse(ctx context.Context, pk int, reqEditors ...RequestEditorFn) (*DeleteApiV1TagPkResponse, error)
+
+	// GetApiV1TagPkWithResponse request
+	GetApiV1TagPkWithResponse(ctx context.Context, pk int, params *GetApiV1TagPkParams, reqEditors ...RequestEditorFn) (*GetApiV1TagPkResponse, error)
+
+	// PutApiV1TagPkWithBodyWithResponse request with any body
+	PutApiV1TagPkWithBodyWithResponse(ctx context.Context, pk int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PutApiV1TagPkResponse, error)
+
+	PutApiV1TagPkWithResponse(ctx context.Context, pk int, body PutApiV1TagPkJSONRequestBody, reqEditors ...RequestEditorFn) (*PutApiV1TagPkResponse, error)
+
+	// DeleteApiV1TagPkFavoritesWithResponse request
+	DeleteApiV1TagPkFavoritesWithResponse(ctx context.Context, pk int, reqEditors ...RequestEditorFn) (*DeleteApiV1TagPkFavoritesResponse, error)
+
+	// PostApiV1TagPkFavoritesWithResponse request
+	PostApiV1TagPkFavoritesWithResponse(ctx context.Context, pk int, reqEditors ...RequestEditorFn) (*PostApiV1TagPkFavoritesResponse, error)
 }
 
 type GetApiV1DatabaseResponse struct {
@@ -7932,6 +9106,477 @@ func (r PutApiV1SecurityUsersPkResponse) StatusCode() int {
 	return 0
 }
 
+type DeleteApiV1TagResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Message string `json:"message,omitempty"`
+	}
+	JSON401 *N401
+	JSON403 *N403
+	JSON404 *N404
+	JSON422 *N422
+	JSON500 *N500
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteApiV1TagResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteApiV1TagResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetApiV1TagResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		// Count The total record count on the backend
+		Count              float32 `json:"count,omitempty"`
+		DescriptionColumns struct {
+			// ColumnName The description for the column name. Will be translated by babel
+			ColumnName string `json:"column_name,omitempty"`
+		} `json:"description_columns,omitempty"`
+
+		// Ids A list of item ids, useful when you don't know the column id
+		Ids          []int `json:"ids,omitempty"`
+		LabelColumns struct {
+			// ColumnName The label for the column name. Will be translated by babel
+			ColumnName string `json:"column_name,omitempty"`
+		} `json:"label_columns,omitempty"`
+
+		// ListColumns A list of columns
+		ListColumns []string `json:"list_columns,omitempty"`
+
+		// ListTitle A title to render. Will be translated by babel
+		ListTitle string `json:"list_title,omitempty"`
+
+		// OrderColumns A list of allowed columns to sort
+		OrderColumns []string `json:"order_columns,omitempty"`
+
+		// Result The result from the get list query
+		Result []TagRestApiGetList `json:"result,omitempty"`
+	}
+	JSON400 *N400
+	JSON401 *N401
+	JSON422 *N422
+	JSON500 *N500
+}
+
+// Status returns HTTPResponse.Status
+func (r GetApiV1TagResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetApiV1TagResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type PostApiV1TagResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *struct {
+		Id     int            `json:"id,omitempty"`
+		Result TagRestApiPost `json:"result,omitempty"`
+	}
+	JSON400 *N400
+	JSON401 *N401
+	JSON422 *N422
+	JSON500 *N500
+}
+
+// Status returns HTTPResponse.Status
+func (r PostApiV1TagResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PostApiV1TagResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetApiV1TagInfoResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		AddColumns  map[string]interface{} `json:"add_columns,omitempty"`
+		EditColumns map[string]interface{} `json:"edit_columns,omitempty"`
+		Filters     struct {
+			ColumnName []struct {
+				// Name The filter name. Will be translated by babel
+				Name string `json:"name,omitempty"`
+
+				// Operator The filter operation key to use on list filters
+				Operator string `json:"operator,omitempty"`
+			} `json:"column_name,omitempty"`
+		} `json:"filters,omitempty"`
+
+		// Permissions The user permissions for this API resource
+		Permissions []string `json:"permissions,omitempty"`
+	}
+	JSON400 *N400
+	JSON401 *N401
+	JSON422 *N422
+	JSON500 *N500
+}
+
+// Status returns HTTPResponse.Status
+func (r GetApiV1TagInfoResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetApiV1TagInfoResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type PostApiV1TagBulkCreateResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *TagPostBulkResponseSchema
+	JSON400      *N400
+	JSON401      *N401
+	JSON404      *N404
+	JSON500      *N500
+}
+
+// Status returns HTTPResponse.Status
+func (r PostApiV1TagBulkCreateResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PostApiV1TagBulkCreateResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetApiV1TagFavoriteStatusResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *GetFavStarIdsSchema
+	JSON400      *N400
+	JSON401      *N401
+	JSON404      *N404
+	JSON500      *N500
+}
+
+// Status returns HTTPResponse.Status
+func (r GetApiV1TagFavoriteStatusResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetApiV1TagFavoriteStatusResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetApiV1TagGetObjectsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Result []TaggedObjectEntityResponseSchema `json:"result,omitempty"`
+	}
+	JSON400 *N400
+	JSON401 *N401
+	JSON404 *N404
+	JSON500 *N500
+}
+
+// Status returns HTTPResponse.Status
+func (r GetApiV1TagGetObjectsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetApiV1TagGetObjectsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetApiV1TagRelatedColumnNameResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *RelatedResponseSchema
+	JSON400      *N400
+	JSON401      *N401
+	JSON404      *N404
+	JSON500      *N500
+}
+
+// Status returns HTTPResponse.Status
+func (r GetApiV1TagRelatedColumnNameResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetApiV1TagRelatedColumnNameResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type PostApiV1TagObjectTypeObjectIdResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON400      *N400
+	JSON401      *N401
+	JSON404      *N404
+	JSON500      *N500
+}
+
+// Status returns HTTPResponse.Status
+func (r PostApiV1TagObjectTypeObjectIdResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PostApiV1TagObjectTypeObjectIdResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteApiV1TagObjectTypeObjectIdTagResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Message string `json:"message,omitempty"`
+	}
+	JSON401 *N401
+	JSON403 *N403
+	JSON404 *N404
+	JSON422 *N422
+	JSON500 *N500
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteApiV1TagObjectTypeObjectIdTagResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteApiV1TagObjectTypeObjectIdTagResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteApiV1TagPkResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Message string `json:"message,omitempty"`
+	}
+	JSON404 *N404
+	JSON422 *N422
+	JSON500 *N500
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteApiV1TagPkResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteApiV1TagPkResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetApiV1TagPkResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		DescriptionColumns struct {
+			// ColumnName The description for the column name. Will be translated by babel
+			ColumnName string `json:"column_name,omitempty"`
+		} `json:"description_columns,omitempty"`
+
+		// Id The item id
+		Id           int `json:"id,omitempty"`
+		LabelColumns struct {
+			// ColumnName The label for the column name. Will be translated by babel
+			ColumnName string `json:"column_name,omitempty"`
+		} `json:"label_columns,omitempty"`
+		Result TagRestApiGet `json:"result,omitempty"`
+
+		// ShowColumns A list of columns
+		ShowColumns []string `json:"show_columns,omitempty"`
+
+		// ShowTitle A title to render. Will be translated by babel
+		ShowTitle string `json:"show_title,omitempty"`
+	}
+	JSON400 *N400
+	JSON401 *N401
+	JSON404 *N404
+	JSON422 *N422
+	JSON500 *N500
+}
+
+// Status returns HTTPResponse.Status
+func (r GetApiV1TagPkResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetApiV1TagPkResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type PutApiV1TagPkResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Id     int           `json:"id,omitempty"`
+		Result TagRestApiPut `json:"result,omitempty"`
+	}
+	JSON400 *N400
+	JSON401 *N401
+	JSON403 *N403
+	JSON404 *N404
+	JSON422 *N422
+	JSON500 *N500
+}
+
+// Status returns HTTPResponse.Status
+func (r PutApiV1TagPkResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PutApiV1TagPkResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteApiV1TagPkFavoritesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Result map[string]interface{} `json:"result,omitempty"`
+	}
+	JSON401 *N401
+	JSON404 *N404
+	JSON422 *N422
+	JSON500 *N500
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteApiV1TagPkFavoritesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteApiV1TagPkFavoritesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type PostApiV1TagPkFavoritesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Result map[string]interface{} `json:"result,omitempty"`
+	}
+	JSON401 *N401
+	JSON404 *N404
+	JSON422 *N422
+	JSON500 *N500
+}
+
+// Status returns HTTPResponse.Status
+func (r PostApiV1TagPkFavoritesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PostApiV1TagPkFavoritesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 // GetApiV1DatabaseWithResponse request returning *GetApiV1DatabaseResponse
 func (c *ClientWithResponses) GetApiV1DatabaseWithResponse(ctx context.Context, params *GetApiV1DatabaseParams, reqEditors ...RequestEditorFn) (*GetApiV1DatabaseResponse, error) {
 	rsp, err := c.GetApiV1Database(ctx, params, reqEditors...)
@@ -8650,6 +10295,173 @@ func (c *ClientWithResponses) PutApiV1SecurityUsersPkWithResponse(ctx context.Co
 		return nil, err
 	}
 	return ParsePutApiV1SecurityUsersPkResponse(rsp)
+}
+
+// DeleteApiV1TagWithResponse request returning *DeleteApiV1TagResponse
+func (c *ClientWithResponses) DeleteApiV1TagWithResponse(ctx context.Context, params *DeleteApiV1TagParams, reqEditors ...RequestEditorFn) (*DeleteApiV1TagResponse, error) {
+	rsp, err := c.DeleteApiV1Tag(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteApiV1TagResponse(rsp)
+}
+
+// GetApiV1TagWithResponse request returning *GetApiV1TagResponse
+func (c *ClientWithResponses) GetApiV1TagWithResponse(ctx context.Context, params *GetApiV1TagParams, reqEditors ...RequestEditorFn) (*GetApiV1TagResponse, error) {
+	rsp, err := c.GetApiV1Tag(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetApiV1TagResponse(rsp)
+}
+
+// PostApiV1TagWithBodyWithResponse request with arbitrary body returning *PostApiV1TagResponse
+func (c *ClientWithResponses) PostApiV1TagWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostApiV1TagResponse, error) {
+	rsp, err := c.PostApiV1TagWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePostApiV1TagResponse(rsp)
+}
+
+func (c *ClientWithResponses) PostApiV1TagWithResponse(ctx context.Context, body PostApiV1TagJSONRequestBody, reqEditors ...RequestEditorFn) (*PostApiV1TagResponse, error) {
+	rsp, err := c.PostApiV1Tag(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePostApiV1TagResponse(rsp)
+}
+
+// GetApiV1TagInfoWithResponse request returning *GetApiV1TagInfoResponse
+func (c *ClientWithResponses) GetApiV1TagInfoWithResponse(ctx context.Context, params *GetApiV1TagInfoParams, reqEditors ...RequestEditorFn) (*GetApiV1TagInfoResponse, error) {
+	rsp, err := c.GetApiV1TagInfo(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetApiV1TagInfoResponse(rsp)
+}
+
+// PostApiV1TagBulkCreateWithBodyWithResponse request with arbitrary body returning *PostApiV1TagBulkCreateResponse
+func (c *ClientWithResponses) PostApiV1TagBulkCreateWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostApiV1TagBulkCreateResponse, error) {
+	rsp, err := c.PostApiV1TagBulkCreateWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePostApiV1TagBulkCreateResponse(rsp)
+}
+
+func (c *ClientWithResponses) PostApiV1TagBulkCreateWithResponse(ctx context.Context, body PostApiV1TagBulkCreateJSONRequestBody, reqEditors ...RequestEditorFn) (*PostApiV1TagBulkCreateResponse, error) {
+	rsp, err := c.PostApiV1TagBulkCreate(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePostApiV1TagBulkCreateResponse(rsp)
+}
+
+// GetApiV1TagFavoriteStatusWithResponse request returning *GetApiV1TagFavoriteStatusResponse
+func (c *ClientWithResponses) GetApiV1TagFavoriteStatusWithResponse(ctx context.Context, params *GetApiV1TagFavoriteStatusParams, reqEditors ...RequestEditorFn) (*GetApiV1TagFavoriteStatusResponse, error) {
+	rsp, err := c.GetApiV1TagFavoriteStatus(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetApiV1TagFavoriteStatusResponse(rsp)
+}
+
+// GetApiV1TagGetObjectsWithResponse request returning *GetApiV1TagGetObjectsResponse
+func (c *ClientWithResponses) GetApiV1TagGetObjectsWithResponse(ctx context.Context, params *GetApiV1TagGetObjectsParams, reqEditors ...RequestEditorFn) (*GetApiV1TagGetObjectsResponse, error) {
+	rsp, err := c.GetApiV1TagGetObjects(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetApiV1TagGetObjectsResponse(rsp)
+}
+
+// GetApiV1TagRelatedColumnNameWithResponse request returning *GetApiV1TagRelatedColumnNameResponse
+func (c *ClientWithResponses) GetApiV1TagRelatedColumnNameWithResponse(ctx context.Context, columnName string, params *GetApiV1TagRelatedColumnNameParams, reqEditors ...RequestEditorFn) (*GetApiV1TagRelatedColumnNameResponse, error) {
+	rsp, err := c.GetApiV1TagRelatedColumnName(ctx, columnName, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetApiV1TagRelatedColumnNameResponse(rsp)
+}
+
+// PostApiV1TagObjectTypeObjectIdWithBodyWithResponse request with arbitrary body returning *PostApiV1TagObjectTypeObjectIdResponse
+func (c *ClientWithResponses) PostApiV1TagObjectTypeObjectIdWithBodyWithResponse(ctx context.Context, objectType int, objectId int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostApiV1TagObjectTypeObjectIdResponse, error) {
+	rsp, err := c.PostApiV1TagObjectTypeObjectIdWithBody(ctx, objectType, objectId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePostApiV1TagObjectTypeObjectIdResponse(rsp)
+}
+
+func (c *ClientWithResponses) PostApiV1TagObjectTypeObjectIdWithResponse(ctx context.Context, objectType int, objectId int, body PostApiV1TagObjectTypeObjectIdJSONRequestBody, reqEditors ...RequestEditorFn) (*PostApiV1TagObjectTypeObjectIdResponse, error) {
+	rsp, err := c.PostApiV1TagObjectTypeObjectId(ctx, objectType, objectId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePostApiV1TagObjectTypeObjectIdResponse(rsp)
+}
+
+// DeleteApiV1TagObjectTypeObjectIdTagWithResponse request returning *DeleteApiV1TagObjectTypeObjectIdTagResponse
+func (c *ClientWithResponses) DeleteApiV1TagObjectTypeObjectIdTagWithResponse(ctx context.Context, objectType int, objectId int, tag string, reqEditors ...RequestEditorFn) (*DeleteApiV1TagObjectTypeObjectIdTagResponse, error) {
+	rsp, err := c.DeleteApiV1TagObjectTypeObjectIdTag(ctx, objectType, objectId, tag, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteApiV1TagObjectTypeObjectIdTagResponse(rsp)
+}
+
+// DeleteApiV1TagPkWithResponse request returning *DeleteApiV1TagPkResponse
+func (c *ClientWithResponses) DeleteApiV1TagPkWithResponse(ctx context.Context, pk int, reqEditors ...RequestEditorFn) (*DeleteApiV1TagPkResponse, error) {
+	rsp, err := c.DeleteApiV1TagPk(ctx, pk, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteApiV1TagPkResponse(rsp)
+}
+
+// GetApiV1TagPkWithResponse request returning *GetApiV1TagPkResponse
+func (c *ClientWithResponses) GetApiV1TagPkWithResponse(ctx context.Context, pk int, params *GetApiV1TagPkParams, reqEditors ...RequestEditorFn) (*GetApiV1TagPkResponse, error) {
+	rsp, err := c.GetApiV1TagPk(ctx, pk, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetApiV1TagPkResponse(rsp)
+}
+
+// PutApiV1TagPkWithBodyWithResponse request with arbitrary body returning *PutApiV1TagPkResponse
+func (c *ClientWithResponses) PutApiV1TagPkWithBodyWithResponse(ctx context.Context, pk int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PutApiV1TagPkResponse, error) {
+	rsp, err := c.PutApiV1TagPkWithBody(ctx, pk, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePutApiV1TagPkResponse(rsp)
+}
+
+func (c *ClientWithResponses) PutApiV1TagPkWithResponse(ctx context.Context, pk int, body PutApiV1TagPkJSONRequestBody, reqEditors ...RequestEditorFn) (*PutApiV1TagPkResponse, error) {
+	rsp, err := c.PutApiV1TagPk(ctx, pk, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePutApiV1TagPkResponse(rsp)
+}
+
+// DeleteApiV1TagPkFavoritesWithResponse request returning *DeleteApiV1TagPkFavoritesResponse
+func (c *ClientWithResponses) DeleteApiV1TagPkFavoritesWithResponse(ctx context.Context, pk int, reqEditors ...RequestEditorFn) (*DeleteApiV1TagPkFavoritesResponse, error) {
+	rsp, err := c.DeleteApiV1TagPkFavorites(ctx, pk, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteApiV1TagPkFavoritesResponse(rsp)
+}
+
+// PostApiV1TagPkFavoritesWithResponse request returning *PostApiV1TagPkFavoritesResponse
+func (c *ClientWithResponses) PostApiV1TagPkFavoritesWithResponse(ctx context.Context, pk int, reqEditors ...RequestEditorFn) (*PostApiV1TagPkFavoritesResponse, error) {
+	rsp, err := c.PostApiV1TagPkFavorites(ctx, pk, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePostApiV1TagPkFavoritesResponse(rsp)
 }
 
 // ParseGetApiV1DatabaseResponse parses an HTTP response from a GetApiV1DatabaseWithResponse call
@@ -12449,6 +14261,915 @@ func ParsePutApiV1SecurityUsersPkResponse(rsp *http.Response) (*PutApiV1Security
 			return nil, err
 		}
 		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest N401
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest N404
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest N422
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest N500
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteApiV1TagResponse parses an HTTP response from a DeleteApiV1TagWithResponse call
+func ParseDeleteApiV1TagResponse(rsp *http.Response) (*DeleteApiV1TagResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteApiV1TagResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Message string `json:"message,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest N401
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest N403
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest N404
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest N422
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest N500
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetApiV1TagResponse parses an HTTP response from a GetApiV1TagWithResponse call
+func ParseGetApiV1TagResponse(rsp *http.Response) (*GetApiV1TagResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetApiV1TagResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// Count The total record count on the backend
+			Count              float32 `json:"count,omitempty"`
+			DescriptionColumns struct {
+				// ColumnName The description for the column name. Will be translated by babel
+				ColumnName string `json:"column_name,omitempty"`
+			} `json:"description_columns,omitempty"`
+
+			// Ids A list of item ids, useful when you don't know the column id
+			Ids          []int `json:"ids,omitempty"`
+			LabelColumns struct {
+				// ColumnName The label for the column name. Will be translated by babel
+				ColumnName string `json:"column_name,omitempty"`
+			} `json:"label_columns,omitempty"`
+
+			// ListColumns A list of columns
+			ListColumns []string `json:"list_columns,omitempty"`
+
+			// ListTitle A title to render. Will be translated by babel
+			ListTitle string `json:"list_title,omitempty"`
+
+			// OrderColumns A list of allowed columns to sort
+			OrderColumns []string `json:"order_columns,omitempty"`
+
+			// Result The result from the get list query
+			Result []TagRestApiGetList `json:"result,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest N401
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest N422
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest N500
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParsePostApiV1TagResponse parses an HTTP response from a PostApiV1TagWithResponse call
+func ParsePostApiV1TagResponse(rsp *http.Response) (*PostApiV1TagResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PostApiV1TagResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest struct {
+			Id     int            `json:"id,omitempty"`
+			Result TagRestApiPost `json:"result,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest N401
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest N422
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest N500
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetApiV1TagInfoResponse parses an HTTP response from a GetApiV1TagInfoWithResponse call
+func ParseGetApiV1TagInfoResponse(rsp *http.Response) (*GetApiV1TagInfoResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetApiV1TagInfoResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			AddColumns  map[string]interface{} `json:"add_columns,omitempty"`
+			EditColumns map[string]interface{} `json:"edit_columns,omitempty"`
+			Filters     struct {
+				ColumnName []struct {
+					// Name The filter name. Will be translated by babel
+					Name string `json:"name,omitempty"`
+
+					// Operator The filter operation key to use on list filters
+					Operator string `json:"operator,omitempty"`
+				} `json:"column_name,omitempty"`
+			} `json:"filters,omitempty"`
+
+			// Permissions The user permissions for this API resource
+			Permissions []string `json:"permissions,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest N401
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest N422
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest N500
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParsePostApiV1TagBulkCreateResponse parses an HTTP response from a PostApiV1TagBulkCreateWithResponse call
+func ParsePostApiV1TagBulkCreateResponse(rsp *http.Response) (*PostApiV1TagBulkCreateResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PostApiV1TagBulkCreateResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest TagPostBulkResponseSchema
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest N401
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest N404
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest N500
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetApiV1TagFavoriteStatusResponse parses an HTTP response from a GetApiV1TagFavoriteStatusWithResponse call
+func ParseGetApiV1TagFavoriteStatusResponse(rsp *http.Response) (*GetApiV1TagFavoriteStatusResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetApiV1TagFavoriteStatusResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GetFavStarIdsSchema
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest N401
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest N404
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest N500
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetApiV1TagGetObjectsResponse parses an HTTP response from a GetApiV1TagGetObjectsWithResponse call
+func ParseGetApiV1TagGetObjectsResponse(rsp *http.Response) (*GetApiV1TagGetObjectsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetApiV1TagGetObjectsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Result []TaggedObjectEntityResponseSchema `json:"result,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest N401
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest N404
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest N500
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetApiV1TagRelatedColumnNameResponse parses an HTTP response from a GetApiV1TagRelatedColumnNameWithResponse call
+func ParseGetApiV1TagRelatedColumnNameResponse(rsp *http.Response) (*GetApiV1TagRelatedColumnNameResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetApiV1TagRelatedColumnNameResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest RelatedResponseSchema
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest N401
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest N404
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest N500
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParsePostApiV1TagObjectTypeObjectIdResponse parses an HTTP response from a PostApiV1TagObjectTypeObjectIdWithResponse call
+func ParsePostApiV1TagObjectTypeObjectIdResponse(rsp *http.Response) (*PostApiV1TagObjectTypeObjectIdResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PostApiV1TagObjectTypeObjectIdResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest N401
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest N404
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest N500
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteApiV1TagObjectTypeObjectIdTagResponse parses an HTTP response from a DeleteApiV1TagObjectTypeObjectIdTagWithResponse call
+func ParseDeleteApiV1TagObjectTypeObjectIdTagResponse(rsp *http.Response) (*DeleteApiV1TagObjectTypeObjectIdTagResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteApiV1TagObjectTypeObjectIdTagResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Message string `json:"message,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest N401
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest N403
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest N404
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest N422
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest N500
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteApiV1TagPkResponse parses an HTTP response from a DeleteApiV1TagPkWithResponse call
+func ParseDeleteApiV1TagPkResponse(rsp *http.Response) (*DeleteApiV1TagPkResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteApiV1TagPkResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Message string `json:"message,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest N404
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest N422
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest N500
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetApiV1TagPkResponse parses an HTTP response from a GetApiV1TagPkWithResponse call
+func ParseGetApiV1TagPkResponse(rsp *http.Response) (*GetApiV1TagPkResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetApiV1TagPkResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			DescriptionColumns struct {
+				// ColumnName The description for the column name. Will be translated by babel
+				ColumnName string `json:"column_name,omitempty"`
+			} `json:"description_columns,omitempty"`
+
+			// Id The item id
+			Id           int `json:"id,omitempty"`
+			LabelColumns struct {
+				// ColumnName The label for the column name. Will be translated by babel
+				ColumnName string `json:"column_name,omitempty"`
+			} `json:"label_columns,omitempty"`
+			Result TagRestApiGet `json:"result,omitempty"`
+
+			// ShowColumns A list of columns
+			ShowColumns []string `json:"show_columns,omitempty"`
+
+			// ShowTitle A title to render. Will be translated by babel
+			ShowTitle string `json:"show_title,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest N401
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest N404
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest N422
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest N500
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParsePutApiV1TagPkResponse parses an HTTP response from a PutApiV1TagPkWithResponse call
+func ParsePutApiV1TagPkResponse(rsp *http.Response) (*PutApiV1TagPkResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PutApiV1TagPkResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Id     int           `json:"id,omitempty"`
+			Result TagRestApiPut `json:"result,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest N400
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest N401
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest N403
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest N404
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest N422
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest N500
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteApiV1TagPkFavoritesResponse parses an HTTP response from a DeleteApiV1TagPkFavoritesWithResponse call
+func ParseDeleteApiV1TagPkFavoritesResponse(rsp *http.Response) (*DeleteApiV1TagPkFavoritesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteApiV1TagPkFavoritesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Result map[string]interface{} `json:"result,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest N401
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest N404
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest N422
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest N500
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParsePostApiV1TagPkFavoritesResponse parses an HTTP response from a PostApiV1TagPkFavoritesWithResponse call
+func ParsePostApiV1TagPkFavoritesResponse(rsp *http.Response) (*PostApiV1TagPkFavoritesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PostApiV1TagPkFavoritesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Result map[string]interface{} `json:"result,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest N401

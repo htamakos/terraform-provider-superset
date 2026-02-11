@@ -15,4 +15,5 @@ output-options:
     - Security Users
     - Security Groups
     - Security Permissions on Resources (View Menus)
+    - Tags
     - Database
