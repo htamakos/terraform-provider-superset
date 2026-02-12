@@ -12,7 +12,7 @@ import (
 type rolePermissionBaseModel struct {
 	RoleId      types.Int64  `tfsdk:"role_id"`
 	RoleName    types.String `tfsdk:"role_name"`
-	Permissions types.List   `tfsdk:"permissions"`
+	Permissions types.Set    `tfsdk:"permissions"`
 }
 
 func (model *rolePermissionBaseModel) updateState(roleId int64, roleName string, permissions []client.SupersetRolePermissionApiGetList) {
@@ -76,7 +76,7 @@ func (model *rolePermissionBaseModel) resolvePermissions(sourcePermissions []cli
 	return permissions, notFoundPermissions
 }
 
-func (model *rolePermissionBaseModel) flattenPermissionsToList(permissions []client.SupersetRolePermissionApiGetList) types.List {
+func (model *rolePermissionBaseModel) flattenPermissionsToList(permissions []client.SupersetRolePermissionApiGetList) types.Set {
 	permissionObjType := types.ObjectType{
 		AttrTypes: map[string]attr.Type{
 			"permission_name": types.StringType,
@@ -96,6 +96,6 @@ func (model *rolePermissionBaseModel) flattenPermissionsToList(permissions []cli
 		elems = append(elems, ov)
 	}
 
-	lv, _ := types.ListValue(permissionObjType, elems)
+	lv, _ := types.SetValue(permissionObjType, elems)
 	return lv
 }

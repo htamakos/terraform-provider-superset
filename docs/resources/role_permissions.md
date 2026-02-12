@@ -27,7 +27,7 @@ resource "superset_role_permissions" "example" {
 
 ### Required
 
-- `permissions` (Attributes List) The list of permissions assigned to the role. (see [below for nested schema](#nestedatt--permissions))
+- `permissions` (Attributes Set) The list of permissions assigned to the role. (see [below for nested schema](#nestedatt--permissions))
 - `role_name` (String) The name of the role.
 
 ### Optional
