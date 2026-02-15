@@ -32,18 +32,26 @@ resource "superset_dataset" "example" {
 ### Optional
 
 - `always_filter_main_dttm` (Boolean) The always filter main dttm of the Dataset.
+- `bootstrap_database_name` (String) The database name of the Dataset used for bootstrapping.
+Some Superset databases configured with OAuth authentication cannot be directly referenced during dataset creation via the Terraform provider, resulting in creation failures.
+
+To mitigate this limitation, a temporary non-OAuth database is specified at creation time. Once the dataset resource is successfully created, it is immediately updated to reference the intended OAuth-authenticated database.
+
+This database is not intended for operational use and exists solely to satisfy creation-time constraints.
 - `cache_timeout` (Number) The cache timeout of the Dataset.
 - `catalog` (String) The catalog of the Dataset.
 - `description` (String) The description of the Dataset.
 - `filter_select_enabled` (Boolean) The filter select enabled of the Dataset.
 - `is_managed_externally` (Boolean) Whether the Dataset is managed externally.
 - `normalize_columns` (Boolean) The normalize columns of the Dataset.
+- `owner_ids` (Set of Number) The owner IDs of the Dataset.
 - `schema` (String) The schema of the Dataset.
 - `sql` (String) The SQL of the Dataset.
 - `timeouts` (Attributes) (see [below for nested schema](#nestedatt--timeouts))
 
 ### Read-Only
 
+- `bootstrap_database_id` (Number) The database ID of the Dataset used for bootstrapping.
 - `database_id` (Number) The database ID of the Dataset.
 - `id` (Number) The ID of the Dataset.
 
