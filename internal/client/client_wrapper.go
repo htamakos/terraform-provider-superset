@@ -1378,7 +1378,9 @@ func (cw *ClientWrapper) UpdateDataset(ctx context.Context, datasetID int, datas
 	res, err := cw.PutApiV1DatasetPk(
 		ctx,
 		datasetID,
-		&PutApiV1DatasetPkParams{},
+		&PutApiV1DatasetPkParams{
+			OverrideColumns: false,
+		},
 		dataset,
 		reqEditor,
 	)
