@@ -16,7 +16,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/htamakos/terraform-provider-superset/internal/client"
 	"github.com/oapi-codegen/nullable"
@@ -58,6 +60,25 @@ func (r *DatasetResource) Schema(ctx context.Context, req resource.SchemaRequest
 			"database_id": schema.Int64Attribute{
 				Computed:            true,
 				MarkdownDescription: "The database ID of the Dataset.",
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
+			"bootstrap_database_name": schema.StringAttribute{
+				Optional: true,
+				MarkdownDescription: `The database name of the Dataset used for bootstrapping.
+Some Superset databases configured with OAuth authentication cannot be directly referenced during dataset creation via the Terraform provider, resulting in creation failures.
+
+To mitigate this limitation, a temporary non-OAuth database is specified at creation time. Once the dataset resource is successfully created, it is immediately updated to reference the intended OAuth-authenticated database.
+
+This database is not intended for operational use and exists solely to satisfy creation-time constraints.`,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
+			},
+			"bootstrap_database_id": schema.Int64Attribute{
+				Computed:            true,
+				MarkdownDescription: "The database ID of the Dataset used for bootstrapping.",
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.UseStateForUnknown(),
 				},
@@ -147,6 +168,14 @@ func (r *DatasetResource) Schema(ctx context.Context, req resource.SchemaRequest
 				},
 				Default: booldefault.StaticBool(false),
 			},
+			"owner_ids": schema.SetAttribute{
+				Optional:            true,
+				MarkdownDescription: "The owner IDs of the Dataset.",
+				ElementType:         types.Int64Type,
+				PlanModifiers: []planmodifier.Set{
+					setplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"timeouts": timeouts.Attributes(ctx, timeouts.Opts{
 				Create: true, Update: true, Delete: true,
 			}),
@@ -185,11 +214,19 @@ func (r *DatasetResource) Create(ctx context.Context, req resource.CreateRequest
 	ctx, cancel := SetupTimeoutCreate(ctx, r.Timeouts, Timeout5min)
 	defer cancel()
 
-	database, err := r.client.FindDatabase(ctx, data.DatabaseName.ValueString())
+	var bootstrapDatabaseName string
+	if !data.BootstrapDatabaseName.IsNull() && data.BootstrapDatabaseName.ValueString() != "" {
+		bootstrapDatabaseName = data.BootstrapDatabaseName.ValueString()
+	} else {
+		bootstrapDatabaseName = data.DatabaseName.ValueString()
+	}
+
+	database, err := r.client.FindDatabase(ctx, bootstrapDatabaseName)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to find Database with name '%s': %s", data.DatabaseName.ValueString(), err))
 		return
 	}
+	bootstrapDatabaseId := database.Id
 
 	postData := client.DatasetRestApiPost{
 		TableName:           data.TableName.ValueString(),
@@ -230,7 +267,9 @@ func (r *DatasetResource) Create(ctx context.Context, req resource.CreateRequest
 		return
 	}
 
-	if !data.Description.IsNull() || !data.CacheTimeout.IsNull() || !data.FilterSelectEnabled.IsNull() {
+	isChangedBootstrapDatabase := data.DatabaseName.ValueString() != bootstrapDatabaseName
+
+	if !data.Description.IsNull() || !data.CacheTimeout.IsNull() || !data.FilterSelectEnabled.IsNull() || isChangedBootstrapDatabase {
 		putData := client.DatasetRestApiPut{}
 		if !data.Description.IsNull() {
 			putData.Description = nullable.NewNullableWithValue(data.Description.ValueString())
@@ -241,6 +280,29 @@ func (r *DatasetResource) Create(ctx context.Context, req resource.CreateRequest
 		if !data.FilterSelectEnabled.IsNull() {
 			putData.FilterSelectEnabled = nullable.NewNullableWithValue(data.FilterSelectEnabled.ValueBool())
 		}
+		if isChangedBootstrapDatabase {
+			database, err = r.client.FindDatabase(ctx, data.DatabaseName.ValueString())
+			if err != nil {
+				resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to find Database with name '%s': %s", data.DatabaseName.ValueString(), err))
+				return
+			}
+
+			putData.DatabaseId = database.Id
+		}
+
+		if !data.OwnerIds.IsNull() && len(data.OwnerIds.Elements()) > 0 {
+			var ownerIds []int
+			for _, v := range data.OwnerIds.Elements() {
+				ownerIdValue, ok := v.(types.Int64)
+				if !ok {
+					resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to parse owner ID: expected int64, got %T", v))
+					return
+				}
+
+				ownerIds = append(ownerIds, int(ownerIdValue.ValueInt64()))
+			}
+			putData.Owners = ownerIds
+		}
 
 		d, err = r.client.UpdateDataset(ctx, d.Id, putData)
 		if err != nil {
@@ -250,6 +312,11 @@ func (r *DatasetResource) Create(ctx context.Context, req resource.CreateRequest
 	}
 
 	data.updateState(d)
+	data.BootstrapDatabaseId = types.Int64Value(int64(bootstrapDatabaseId))
+	if isChangedBootstrapDatabase {
+		data.BootstrapDatabaseName = types.StringValue(bootstrapDatabaseName)
+	}
+
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
@@ -319,6 +386,18 @@ func (r *DatasetResource) Update(ctx context.Context, req resource.UpdateRequest
 	}
 	if !plan.TableName.IsNull() {
 		putData.TableName = nullable.NewNullableWithValue(plan.TableName.ValueString())
+	}
+	if !plan.OwnerIds.IsNull() && len(plan.OwnerIds.Elements()) > 0 {
+		var ownerIds []int
+		for _, v := range plan.OwnerIds.Elements() {
+			ownerIdValue, ok := v.(types.Int64)
+			if !ok {
+				resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to parse owner ID: expected int64, got %T", v))
+				return
+			}
+			ownerIds = append(ownerIds, int(ownerIdValue.ValueInt64()))
+		}
+		putData.Owners = ownerIds
 	}
 
 	g, err := r.client.UpdateDataset(ctx, int(state.Id.ValueInt64()), putData)
