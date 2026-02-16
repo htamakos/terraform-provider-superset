@@ -337,7 +337,7 @@ func (r *datasetColumnsResource) Update(ctx context.Context, req resource.Update
 	}
 
 	state.updateState(d)
-	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
 func (r *datasetColumnsResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
