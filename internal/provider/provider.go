@@ -160,7 +160,10 @@ func (p *SupersetProvider) Resources(ctx context.Context) []func() resource.Reso
 		NewGroupResource,
 		NewGroupRoleBindingResource,
 		NewTagResource,
+		NewDatasetColumnsResource,
 		NewDatasetResource,
+		NewDatasetFolderResource,
+		NewDatasetMetricsResource,
 	}
 }
 
