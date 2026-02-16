@@ -542,6 +542,12 @@ type DatasetDuplicateSchema struct {
 	TableName   string `json:"table_name"`
 }
 
+// DatasetMetricCurrencyGet defines model for DatasetMetricCurrencyGet.
+type DatasetMetricCurrencyGet struct {
+	Symbol         string `json:"symbol,omitempty"`
+	SymbolPosition string `json:"symbolPosition,omitempty"`
+}
+
 // DatasetMetricCurrencyPut defines model for DatasetMetricCurrencyPut.
 type DatasetMetricCurrencyPut struct {
 	Symbol         string `json:"symbol,omitempty"`
@@ -659,19 +665,19 @@ type DatasetRestApiGetDatabase struct {
 
 // DatasetRestApiGetSqlMetric defines model for DatasetRestApi.get.SqlMetric.
 type DatasetRestApiGetSqlMetric struct {
-	ChangedOn   nullable.Nullable[string]             `json:"changed_on,omitempty"`
-	CreatedOn   nullable.Nullable[string]             `json:"created_on,omitempty"`
-	Currency    nullable.Nullable[interface{}]        `json:"currency,omitempty"`
-	D3format    nullable.Nullable[string]             `json:"d3format,omitempty"`
-	Description nullable.Nullable[string]             `json:"description,omitempty"`
-	Expression  string                                `json:"expression"`
-	Extra       nullable.Nullable[string]             `json:"extra,omitempty"`
-	Id          int                                   `json:"id,omitempty"`
-	MetricName  string                                `json:"metric_name"`
-	MetricType  nullable.Nullable[string]             `json:"metric_type,omitempty"`
-	Uuid        nullable.Nullable[openapi_types.UUID] `json:"uuid,omitempty"`
-	VerboseName nullable.Nullable[string]             `json:"verbose_name,omitempty"`
-	WarningText nullable.Nullable[string]             `json:"warning_text,omitempty"`
+	ChangedOn   nullable.Nullable[string]                   `json:"changed_on,omitempty"`
+	CreatedOn   nullable.Nullable[string]                   `json:"created_on,omitempty"`
+	Currency    nullable.Nullable[DatasetMetricCurrencyGet] `json:"currency,omitempty"`
+	D3format    nullable.Nullable[string]                   `json:"d3format,omitempty"`
+	Description nullable.Nullable[string]                   `json:"description,omitempty"`
+	Expression  string                                      `json:"expression"`
+	Extra       nullable.Nullable[string]                   `json:"extra,omitempty"`
+	Id          int                                         `json:"id,omitempty"`
+	MetricName  string                                      `json:"metric_name"`
+	MetricType  nullable.Nullable[string]                   `json:"metric_type,omitempty"`
+	Uuid        nullable.Nullable[openapi_types.UUID]       `json:"uuid,omitempty"`
+	VerboseName nullable.Nullable[string]                   `json:"verbose_name,omitempty"`
+	WarningText nullable.Nullable[string]                   `json:"warning_text,omitempty"`
 }
 
 // DatasetRestApiGetTableColumn defines model for DatasetRestApi.get.TableColumn.

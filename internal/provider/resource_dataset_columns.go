@@ -9,7 +9,7 @@ import (
 	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
-	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/mapvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -62,11 +62,11 @@ func (r *datasetColumnsResource) Schema(ctx context.Context, req resource.Schema
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
-			"columns": schema.SetNestedAttribute{
+			"columns": schema.MapNestedAttribute{
 				Required:            true,
 				MarkdownDescription: "The columns of the dataset.",
-				Validators: []validator.Set{
-					setvalidator.SizeAtLeast(1),
+				Validators: []validator.Map{
+					mapvalidator.SizeAtLeast(1),
 				},
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
@@ -74,7 +74,7 @@ func (r *datasetColumnsResource) Schema(ctx context.Context, req resource.Schema
 							Computed:            true,
 							MarkdownDescription: "The column ID.",
 							PlanModifiers: []planmodifier.Int64{
-								int64planmodifier.UseStateForUnknown(),
+								int64planmodifier.UseNonNullStateForUnknown(),
 							},
 						},
 						"advanced_data_type": schema.StringAttribute{
@@ -105,13 +105,13 @@ func (r *datasetColumnsResource) Schema(ctx context.Context, req resource.Schema
 								stringplanmodifier.UseStateForUnknown(),
 							},
 						},
-						"extra": schema.StringAttribute{
+						"certified_by": schema.StringAttribute{
 							Optional:            true,
-							Computed:            true,
-							MarkdownDescription: "The extra information of the column.",
-							PlanModifiers: []planmodifier.String{
-								stringplanmodifier.UseStateForUnknown(),
-							},
+							MarkdownDescription: "The user who certified the column.",
+						},
+						"certification_details": schema.StringAttribute{
+							Optional:            true,
+							MarkdownDescription: "The details of the column certification.",
 						},
 						"filterable": schema.BoolAttribute{
 							Required:            true,
@@ -173,6 +173,38 @@ func (r *datasetColumnsResource) Configure(ctx context.Context, req resource.Con
 	r.client = c
 }
 
+func (r *datasetColumnsResource) ValidateConfig(
+	ctx context.Context,
+	req resource.ValidateConfigRequest,
+	resp *resource.ValidateConfigResponse,
+) {
+	var data datasetColumnsResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	for key, m := range data.Columns {
+		if m.ColumnName.IsUnknown() || m.ColumnName.IsNull() {
+			resp.Diagnostics.AddAttributeError(
+				path.Root("columns").AtMapKey(key).AtName("column_name"),
+				"column_name is required",
+				"The column_name attribute is required for each column and cannot be unknown or null.",
+			)
+			continue
+		}
+
+		v := m.ColumnName.ValueString()
+		if v != key {
+			resp.Diagnostics.AddAttributeError(
+				path.Root("columns").AtMapKey(key).AtName("column_name"),
+				"columns key must match metric_name",
+				fmt.Sprintf("The key '%s' in the columns map must match the column_name '%s'.", key, v),
+			)
+		}
+	}
+}
+
 func (r *datasetColumnsResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var data datasetColumnsResourceModel
 
@@ -199,9 +231,10 @@ func (r *datasetColumnsResource) Create(ctx context.Context, req resource.Create
 	columns := data.resovleColumns(dataset.Columns)
 
 	putData := client.DatasetRestApiPut{}
-	datasetColumns := make([]client.DatasetColumnsPut, len(columns))
-	for i, column := range columns {
-		datasetColumns[i] = client.DatasetColumnsPut{
+
+	var datasetColumns []client.DatasetColumnsPut
+	for _, column := range columns {
+		datasetColumn := client.DatasetColumnsPut{
 			Id:         int(column.Id.ValueInt64()),
 			ColumnName: column.ColumnName.ValueString(),
 			Filterable: column.Filterable.ValueBool(),
@@ -211,20 +244,27 @@ func (r *datasetColumnsResource) Create(ctx context.Context, req resource.Create
 			Type:       nullable.NewNullableWithValue(column.Type.ValueString()),
 		}
 		if !column.AdvancedDataType.IsNull() && column.AdvancedDataType.ValueString() != "" {
-			datasetColumns[i].AdvancedDataType = nullable.NewNullableWithValue(column.AdvancedDataType.ValueString())
+			datasetColumn.AdvancedDataType = nullable.NewNullableWithValue(column.AdvancedDataType.ValueString())
 		}
 		if !column.Description.IsNull() && column.Description.ValueString() != "" {
-			datasetColumns[i].Description = nullable.NewNullableWithValue(column.Description.ValueString())
+			datasetColumn.Description = nullable.NewNullableWithValue(column.Description.ValueString())
 		}
 		if !column.Expression.IsNull() && column.Expression.ValueString() != "" {
-			datasetColumns[i].Expression = nullable.NewNullableWithValue(column.Expression.ValueString())
-		}
-		if !column.Extra.IsNull() && column.Extra.ValueString() != "" {
-			datasetColumns[i].Extra = nullable.NewNullableWithValue(column.Extra.ValueString())
+			datasetColumn.Expression = nullable.NewNullableWithValue(column.Expression.ValueString())
 		}
 		if !column.VerboseName.IsNull() && column.VerboseName.ValueString() != "" {
-			datasetColumns[i].VerboseName = nullable.NewNullableWithValue(column.VerboseName.ValueString())
+			datasetColumn.VerboseName = nullable.NewNullableWithValue(column.VerboseName.ValueString())
 		}
+		if !column.CertifiedBy.IsNull() || column.CertifiedBy.ValueString() != "" {
+			extra, err := column.toExtra()
+			if err != nil {
+				resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to convert column certification info to extra field for column '%s': %s", column.ColumnName.ValueString(), err))
+				return
+			}
+			datasetColumn.Extra = nullable.NewNullableWithValue(extra)
+		}
+
+		datasetColumns = append(datasetColumns, datasetColumn)
 	}
 	putData.Columns = datasetColumns
 
@@ -233,7 +273,10 @@ func (r *datasetColumnsResource) Create(ctx context.Context, req resource.Create
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update dataset with ID %d: %s", dataset.Id, err))
 		return
 	}
-	data.updateState(d)
+	if err := data.updateState(d); err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update state from dataset with ID %d: %s", dataset.Id, err))
+		return
+	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
@@ -259,7 +302,10 @@ func (r *datasetColumnsResource) Read(ctx context.Context, req resource.ReadRequ
 		return
 	}
 
-	data.updateState(t)
+	if err := data.updateState(t); err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update state from dataset with ID %d: %s", data.DatasetId.ValueInt64(), err))
+		return
+	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
@@ -294,15 +340,14 @@ func (r *datasetColumnsResource) Update(ctx context.Context, req resource.Update
 	putData := client.DatasetRestApiPut{}
 
 	resolvedColumns := plan.resovleColumns(dataset.Columns)
-	columns := make([]client.DatasetColumnsPut, len(resolvedColumns))
-
+	var columns []client.DatasetColumnsPut
 	stateColumnsMap := make(map[int64]datasetColumn)
 	for _, column := range state.Columns {
 		stateColumnsMap[column.Id.ValueInt64()] = column
 	}
 
-	for i, column := range resolvedColumns {
-		columns[i] = client.DatasetColumnsPut{
+	for _, column := range resolvedColumns {
+		_column := client.DatasetColumnsPut{
 			Id:         int(column.Id.ValueInt64()),
 			ColumnName: column.ColumnName.ValueString(),
 			Filterable: column.Filterable.ValueBool(),
@@ -312,20 +357,27 @@ func (r *datasetColumnsResource) Update(ctx context.Context, req resource.Update
 			Type:       nullable.NewNullableWithValue(stateColumnsMap[column.Id.ValueInt64()].Type.ValueString()),
 		}
 		if !column.AdvancedDataType.IsNull() {
-			columns[i].AdvancedDataType = nullable.NewNullableWithValue(column.AdvancedDataType.ValueString())
+			_column.AdvancedDataType = nullable.NewNullableWithValue(column.AdvancedDataType.ValueString())
 		}
 		if !column.Description.IsNull() {
-			columns[i].Description = nullable.NewNullableWithValue(column.Description.ValueString())
+			_column.Description = nullable.NewNullableWithValue(column.Description.ValueString())
 		}
 		if !column.Expression.IsNull() {
-			columns[i].Expression = nullable.NewNullableWithValue(column.Expression.ValueString())
-		}
-		if !column.Extra.IsNull() {
-			columns[i].Extra = nullable.NewNullableWithValue(column.Extra.ValueString())
+			_column.Expression = nullable.NewNullableWithValue(column.Expression.ValueString())
 		}
 		if !column.VerboseName.IsNull() {
-			columns[i].VerboseName = nullable.NewNullableWithValue(column.VerboseName.ValueString())
+			_column.VerboseName = nullable.NewNullableWithValue(column.VerboseName.ValueString())
 		}
+		if !column.CertifiedBy.IsNull() || column.CertifiedBy.ValueString() != "" {
+			extra, err := column.toExtra()
+			if err != nil {
+				resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to convert column certification info to extra field for column '%s': %s", column.ColumnName.ValueString(), err))
+				return
+			}
+			_column.Extra = nullable.NewNullableWithValue(extra)
+		}
+
+		columns = append(columns, _column)
 	}
 	putData.Columns = columns
 
@@ -336,7 +388,10 @@ func (r *datasetColumnsResource) Update(ctx context.Context, req resource.Update
 		return
 	}
 
-	state.updateState(d)
+	if err := state.updateState(d); err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update state from dataset with ID %d: %s", dataset.Id, err))
+		return
+	}
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 

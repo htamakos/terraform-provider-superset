@@ -3817,6 +3817,17 @@ components:
         - base_model_id
         - table_name
       type: object
+    DatasetMetricCurrencyGet:
+      properties:
+        symbol:
+          maxLength: 128
+          minLength: 1
+          type: string
+        symbolPosition:
+          maxLength: 128
+          minLength: 1
+          type: string
+      type: object
     DatasetMetricCurrencyPut:
       properties:
         symbol:
@@ -4098,6 +4109,8 @@ components:
           x-go-type: string
         currency:
           nullable: true
+          allOf:
+            - $ref: '#/components/schemas/DatasetMetricCurrencyGet'
         d3format:
           maxLength: 128
           nullable: true
