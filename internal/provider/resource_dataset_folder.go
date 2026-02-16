@@ -189,7 +189,7 @@ func (r *datasetFolderResource) Create(ctx context.Context, req resource.CreateR
 		return
 	}
 
-	data.resolveColumns(dataset.Columns)
+	data.resolveColumns(dataset)
 	folders, err := data.toFolders()
 	if err != nil {
 		resp.Diagnostics.AddError("Folder Conversion Error", fmt.Sprintf("Unable to convert folders for dataset with ID %d: %s", dataset.Id, err))
@@ -269,7 +269,7 @@ func (r *datasetFolderResource) Update(ctx context.Context, req resource.UpdateR
 		return
 	}
 
-	plan.resolveColumns(dataset.Columns)
+	plan.resolveColumns(dataset)
 	folders, err := plan.toFolders()
 	if err != nil {
 		resp.Diagnostics.AddError("Folder Conversion Error", fmt.Sprintf("Unable to convert folders for dataset with ID %d: %s", dataset.Id, err))

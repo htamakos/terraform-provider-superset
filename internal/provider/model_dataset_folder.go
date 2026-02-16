@@ -122,20 +122,35 @@ func findColumnByName(columns []client.DatasetRestApiGetTableColumn, name string
 	return nil
 }
 
-func (model *datasetFolderBaseModel) resolveColumns(columns []client.DatasetRestApiGetTableColumn) {
+func findMetricByName(metrics []client.DatasetRestApiGetSqlMetric, name string) *client.DatasetRestApiGetSqlMetric {
+	for _, metric := range metrics {
+		if metric.MetricName == name {
+			return &metric
+		}
+	}
+	return nil
+}
+
+func (model *datasetFolderBaseModel) resolveColumns(d *client.DatasetRestApiGet) {
+
 	for i, folder := range model.Folders {
 		if folder.Type.ValueString() == string(client.FolderTypeFolder) {
-			model.Folders[i].resolveColumns(columns)
+			model.Folders[i].resolveColumns(d)
 		}
 	}
 }
 
-func (model *datasetFolderModel) resolveColumns(columns []client.DatasetRestApiGetTableColumn) {
+func (model *datasetFolderModel) resolveColumns(d *client.DatasetRestApiGet) {
 	for i, child := range model.Children {
 		if child.Type.ValueString() == string(client.FolderTypeColumn) {
-			column := findColumnByName(columns, child.Name.ValueString())
+			column := findColumnByName(d.Columns, child.Name.ValueString())
 			if column != nil && column.Uuid.IsSpecified() {
 				model.Children[i].Uuid = types.StringValue(column.Uuid.MustGet().String())
+			}
+		} else if child.Type.ValueString() == string(client.FolderTypeMetric) {
+			metric := findMetricByName(d.Metrics, child.Name.ValueString())
+			if metric != nil && metric.Uuid.IsSpecified() {
+				model.Children[i].Uuid = types.StringValue(metric.Uuid.MustGet().String())
 			}
 		}
 	}
