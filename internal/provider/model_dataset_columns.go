@@ -163,9 +163,6 @@ func (model *datasetColumnsBaseModel) resovleColumns(columns []client.DatasetRes
 		columnName := column.ColumnName.ValueString()
 		if c, ok := mapColumnNameToColumn[columnName]; ok {
 			column.Id = types.Int64Value(int64(c.Id))
-			if !c.Type.IsNull() && c.Type.MustGet() != "" {
-				column.Type = types.StringValue(c.Type.MustGet())
-			}
 			resolvedColumns = append(resolvedColumns, column)
 		} else {
 			resolvedColumns = append(resolvedColumns, column)

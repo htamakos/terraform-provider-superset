@@ -71,12 +71,12 @@ Optional:
 - `certified_by` (String) The user who certified the column.
 - `description` (String) The description of the column.
 - `expression` (String) The expression of the column.
+- `type` (String) The data type of the column.
 - `verbose_name` (String) The verbose name of the column.
 
 Read-Only:
 
 - `id` (Number) The column ID.
-- `type` (String) The data type of the column.
 
 
 <a id="nestedatt--timeouts"></a>

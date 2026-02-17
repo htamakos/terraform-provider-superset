@@ -765,7 +765,7 @@ type DatasetRestApiGetListUser1 struct {
 
 // DatasetRestApiPost defines model for DatasetRestApi.post.
 type DatasetRestApiPost struct {
-	AlwaysFilterMainDttm bool                                  `json:"always_filter_main_dttm,omitempty"`
+	AlwaysFilterMainDttm bool                                  `json:"always_filter_main_dttm"`
 	Catalog              nullable.Nullable[string]             `json:"catalog,omitempty"`
 	Database             int                                   `json:"database"`
 	ExternalUrl          nullable.Nullable[string]             `json:"external_url,omitempty"`
@@ -781,7 +781,7 @@ type DatasetRestApiPost struct {
 
 // DatasetRestApiPut defines model for DatasetRestApi.put.
 type DatasetRestApiPut struct {
-	AlwaysFilterMainDttm bool                                  `json:"always_filter_main_dttm,omitempty"`
+	AlwaysFilterMainDttm bool                                  `json:"always_filter_main_dttm"`
 	CacheTimeout         nullable.Nullable[int]                `json:"cache_timeout,omitempty"`
 	Catalog              nullable.Nullable[string]             `json:"catalog,omitempty"`
 	Columns              []DatasetColumnsPut                   `json:"columns,omitempty"`
