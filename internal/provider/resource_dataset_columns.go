@@ -173,38 +173,6 @@ func (r *datasetColumnsResource) Configure(ctx context.Context, req resource.Con
 	r.client = c
 }
 
-func (r *datasetColumnsResource) ValidateConfig(
-	ctx context.Context,
-	req resource.ValidateConfigRequest,
-	resp *resource.ValidateConfigResponse,
-) {
-	var data datasetColumnsResourceModel
-	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	for key, m := range data.Columns {
-		if m.ColumnName.IsUnknown() || m.ColumnName.IsNull() {
-			resp.Diagnostics.AddAttributeError(
-				path.Root("columns").AtMapKey(key).AtName("column_name"),
-				"column_name is required",
-				"The column_name attribute is required for each column and cannot be unknown or null.",
-			)
-			continue
-		}
-
-		v := m.ColumnName.ValueString()
-		if v != key {
-			resp.Diagnostics.AddAttributeError(
-				path.Root("columns").AtMapKey(key).AtName("column_name"),
-				"columns key must match metric_name",
-				fmt.Sprintf("The key '%s' in the columns map must match the column_name '%s'.", key, v),
-			)
-		}
-	}
-}
-
 func (r *datasetColumnsResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var data datasetColumnsResourceModel
 

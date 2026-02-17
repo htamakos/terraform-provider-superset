@@ -168,38 +168,6 @@ func (r *datasetMetricsResource) Configure(ctx context.Context, req resource.Con
 	r.client = c
 }
 
-func (r *datasetMetricsResource) ValidateConfig(
-	ctx context.Context,
-	req resource.ValidateConfigRequest,
-	resp *resource.ValidateConfigResponse,
-) {
-	var data datasetMetricsResourceModel
-	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	for key, m := range data.Metrics {
-		if m.MetricName.IsUnknown() || m.MetricName.IsNull() {
-			resp.Diagnostics.AddAttributeError(
-				path.Root("metrics").AtMapKey(key).AtName("metric_name"),
-				"metric_name is required",
-				"The metric_name attribute is required for each metric and cannot be unknown or null.",
-			)
-			continue
-		}
-
-		v := m.MetricName.ValueString()
-		if v != key {
-			resp.Diagnostics.AddAttributeError(
-				path.Root("metrics").AtMapKey(key).AtName("metric_name"),
-				"metrics key must match metric_name",
-				fmt.Sprintf("The key '%s' in the metrics map must match the metric_name '%s'.", key, v),
-			)
-		}
-	}
-}
-
 func (r *datasetMetricsResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var data datasetMetricsResourceModel
 
