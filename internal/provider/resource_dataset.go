@@ -258,9 +258,6 @@ func (r *DatasetResource) Create(ctx context.Context, req resource.CreateRequest
 	if !data.NormalizeColumns.IsNull() {
 		postData.NormalizeColumns = data.NormalizeColumns.ValueBool()
 	}
-	if !data.AlwaysFilterMainDttm.IsNull() {
-		postData.AlwaysFilterMainDttm = data.AlwaysFilterMainDttm.ValueBool()
-	}
 
 	existingDataset, err := r.client.FindDataset(ctx, postData.TableName)
 	if !client.IsNotFound(err) && err != nil {
@@ -281,7 +278,7 @@ func (r *DatasetResource) Create(ctx context.Context, req resource.CreateRequest
 
 	isChangedBootstrapDatabase := data.DatabaseName.ValueString() != bootstrapDatabaseName
 
-	if !data.Description.IsNull() || !data.CacheTimeout.IsNull() || !data.FilterSelectEnabled.IsNull() || isChangedBootstrapDatabase || !data.CertifiedBy.IsNull() || !data.FetchValuesPredicate.IsNull() {
+	if !data.Description.IsNull() || !data.CacheTimeout.IsNull() || !data.FilterSelectEnabled.IsNull() || isChangedBootstrapDatabase || !data.CertifiedBy.IsNull() || !data.FetchValuesPredicate.IsNull() || !data.AlwaysFilterMainDttm.IsNull() {
 		putData := client.DatasetRestApiPut{}
 		if !data.Description.IsNull() {
 			putData.Description = nullable.NewNullableWithValue(data.Description.ValueString())
@@ -295,6 +292,10 @@ func (r *DatasetResource) Create(ctx context.Context, req resource.CreateRequest
 
 		if !data.FetchValuesPredicate.IsNull() {
 			putData.FetchValuesPredicate = nullable.NewNullableWithValue(data.FetchValuesPredicate.ValueString())
+		}
+
+		if !data.AlwaysFilterMainDttm.IsNull() {
+			putData.AlwaysFilterMainDttm = data.AlwaysFilterMainDttm.ValueBool()
 		}
 
 		if isChangedBootstrapDatabase {
