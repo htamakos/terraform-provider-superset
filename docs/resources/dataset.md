@@ -40,6 +40,8 @@ To mitigate this limitation, a temporary non-OAuth database is specified at crea
 This database is not intended for operational use and exists solely to satisfy creation-time constraints.
 - `cache_timeout` (Number) The cache timeout of the Dataset.
 - `catalog` (String) The catalog of the Dataset.
+- `certification_details` (String) The details of the Dataset certification.
+- `certified_by` (String) The user who certified the Dataset.
 - `description` (String) The description of the Dataset.
 - `filter_select_enabled` (Boolean) The filter select enabled of the Dataset.
 - `is_managed_externally` (Boolean) Whether the Dataset is managed externally.
