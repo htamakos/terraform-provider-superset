@@ -130,6 +130,7 @@ func (r *datasetColumnsResource) Schema(ctx context.Context, req resource.Schema
 							MarkdownDescription: "Whether the column is a datetime column.",
 						},
 						"type": schema.StringAttribute{
+							Optional:            true,
 							Computed:            true,
 							MarkdownDescription: "The data type of the column.",
 							PlanModifiers: []planmodifier.String{
@@ -322,7 +323,7 @@ func (r *datasetColumnsResource) Update(ctx context.Context, req resource.Update
 			Groupby:    column.Groupby.ValueBool(),
 			IsActive:   nullable.NewNullableWithValue(column.IsActive.ValueBool()),
 			IsDttm:     nullable.NewNullableWithValue(column.IsDttm.ValueBool()),
-			Type:       nullable.NewNullableWithValue(stateColumnsMap[column.Id.ValueInt64()].Type.ValueString()),
+			Type:       nullable.NewNullableWithValue(column.Type.ValueString()),
 		}
 		if !column.AdvancedDataType.IsNull() {
 			_column.AdvancedDataType = nullable.NewNullableWithValue(column.AdvancedDataType.ValueString())

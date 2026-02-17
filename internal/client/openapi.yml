@@ -2480,6 +2480,7 @@ components:
       properties:
         always_filter_main_dttm:
           type: boolean
+          x-omitempty: false
         cache_timeout:
           type: integer
         column_formats:
@@ -4350,6 +4351,7 @@ components:
         always_filter_main_dttm:
           default: false
           type: boolean
+          x-omitempty: false
         catalog:
           maxLength: 250
           minLength: 0
@@ -4398,6 +4400,7 @@ components:
         always_filter_main_dttm:
           default: false
           type: boolean
+          x-omitempty: false
         cache_timeout:
           nullable: true
           type: integer
