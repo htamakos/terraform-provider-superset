@@ -141,6 +141,10 @@ This database is not intended for operational use and exists solely to satisfy c
 				},
 				Default: booldefault.StaticBool(false),
 			},
+			"fetch_values_predicate": schema.StringAttribute{
+				Optional:            true,
+				MarkdownDescription: "The fetch values predicate of the Dataset.",
+			},
 			"always_filter_main_dttm": schema.BoolAttribute{
 				Optional:            true,
 				Computed:            true,
@@ -277,7 +281,7 @@ func (r *DatasetResource) Create(ctx context.Context, req resource.CreateRequest
 
 	isChangedBootstrapDatabase := data.DatabaseName.ValueString() != bootstrapDatabaseName
 
-	if !data.Description.IsNull() || !data.CacheTimeout.IsNull() || !data.FilterSelectEnabled.IsNull() || isChangedBootstrapDatabase || !data.CertifiedBy.IsNull() {
+	if !data.Description.IsNull() || !data.CacheTimeout.IsNull() || !data.FilterSelectEnabled.IsNull() || isChangedBootstrapDatabase || !data.CertifiedBy.IsNull() || !data.FetchValuesPredicate.IsNull() {
 		putData := client.DatasetRestApiPut{}
 		if !data.Description.IsNull() {
 			putData.Description = nullable.NewNullableWithValue(data.Description.ValueString())
@@ -288,6 +292,11 @@ func (r *DatasetResource) Create(ctx context.Context, req resource.CreateRequest
 		if !data.FilterSelectEnabled.IsNull() {
 			putData.FilterSelectEnabled = nullable.NewNullableWithValue(data.FilterSelectEnabled.ValueBool())
 		}
+
+		if !data.FetchValuesPredicate.IsNull() {
+			putData.FetchValuesPredicate = nullable.NewNullableWithValue(data.FetchValuesPredicate.ValueString())
+		}
+
 		if isChangedBootstrapDatabase {
 			database, err = r.client.FindDatabase(ctx, data.DatabaseName.ValueString())
 			if err != nil {
@@ -393,6 +402,10 @@ func (r *DatasetResource) Update(ctx context.Context, req resource.UpdateRequest
 	if !plan.FilterSelectEnabled.IsNull() {
 		putData.FilterSelectEnabled = nullable.NewNullableWithValue(plan.FilterSelectEnabled.ValueBool())
 	}
+	if !plan.FetchValuesPredicate.IsNull() {
+		putData.FetchValuesPredicate = nullable.NewNullableWithValue(plan.FetchValuesPredicate.ValueString())
+	}
+
 	if !plan.Sql.IsNull() {
 		putData.Sql = nullable.NewNullableWithValue(plan.Sql.ValueString())
 	}

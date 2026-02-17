@@ -43,6 +43,7 @@ This database is not intended for operational use and exists solely to satisfy c
 - `certification_details` (String) The details of the Dataset certification.
 - `certified_by` (String) The user who certified the Dataset.
 - `description` (String) The description of the Dataset.
+- `fetch_values_predicate` (String) The fetch values predicate of the Dataset.
 - `filter_select_enabled` (Boolean) The filter select enabled of the Dataset.
 - `is_managed_externally` (Boolean) Whether the Dataset is managed externally.
 - `normalize_columns` (Boolean) The normalize columns of the Dataset.

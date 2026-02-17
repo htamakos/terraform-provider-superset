@@ -25,6 +25,7 @@ type datasetBaseModel struct {
 	CacheTimeout          types.Int64  `tfsdk:"cache_timeout"`
 	IsManagedExternally   types.Bool   `tfsdk:"is_managed_externally"`
 	FilterSelectEnabled   types.Bool   `tfsdk:"filter_select_enabled"`
+	FetchValuesPredicate  types.String `tfsdk:"fetch_values_predicate"`
 	AlwaysFilterMainDttm  types.Bool   `tfsdk:"always_filter_main_dttm"`
 	NormalizeColumns      types.Bool   `tfsdk:"normalize_columns"`
 	OwnerIds              types.Set    `tfsdk:"owner_ids"`
@@ -106,6 +107,11 @@ func (model *datasetBaseModel) updateState(d *client.DatasetRestApiGet) error {
 	} else {
 		model.FilterSelectEnabled = types.BoolNull()
 	}
+
+	if !d.FetchValuesPredicate.IsNull() && d.FetchValuesPredicate.MustGet() != "" {
+		model.FetchValuesPredicate = types.StringValue(d.FetchValuesPredicate.MustGet())
+	}
+
 	if !d.AlwaysFilterMainDttm.IsNull() {
 		model.AlwaysFilterMainDttm = types.BoolValue(d.AlwaysFilterMainDttm.MustGet())
 	} else {
