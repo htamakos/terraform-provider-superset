@@ -141,6 +141,10 @@ This database is not intended for operational use and exists solely to satisfy c
 				},
 				Default: booldefault.StaticBool(false),
 			},
+			"fetch_values_predicate": schema.StringAttribute{
+				Optional:            true,
+				MarkdownDescription: "The fetch values predicate of the Dataset.",
+			},
 			"always_filter_main_dttm": schema.BoolAttribute{
 				Optional:            true,
 				Computed:            true,
@@ -175,6 +179,14 @@ This database is not intended for operational use and exists solely to satisfy c
 				PlanModifiers: []planmodifier.Set{
 					setplanmodifier.UseStateForUnknown(),
 				},
+			},
+			"certified_by": schema.StringAttribute{
+				Optional:            true,
+				MarkdownDescription: "The user who certified the Dataset.",
+			},
+			"certification_details": schema.StringAttribute{
+				Optional:            true,
+				MarkdownDescription: "The details of the Dataset certification.",
 			},
 			"timeouts": timeouts.Attributes(ctx, timeouts.Opts{
 				Create: true, Update: true, Delete: true,
@@ -269,7 +281,7 @@ func (r *DatasetResource) Create(ctx context.Context, req resource.CreateRequest
 
 	isChangedBootstrapDatabase := data.DatabaseName.ValueString() != bootstrapDatabaseName
 
-	if !data.Description.IsNull() || !data.CacheTimeout.IsNull() || !data.FilterSelectEnabled.IsNull() || isChangedBootstrapDatabase {
+	if !data.Description.IsNull() || !data.CacheTimeout.IsNull() || !data.FilterSelectEnabled.IsNull() || isChangedBootstrapDatabase || !data.CertifiedBy.IsNull() || !data.FetchValuesPredicate.IsNull() {
 		putData := client.DatasetRestApiPut{}
 		if !data.Description.IsNull() {
 			putData.Description = nullable.NewNullableWithValue(data.Description.ValueString())
@@ -280,6 +292,11 @@ func (r *DatasetResource) Create(ctx context.Context, req resource.CreateRequest
 		if !data.FilterSelectEnabled.IsNull() {
 			putData.FilterSelectEnabled = nullable.NewNullableWithValue(data.FilterSelectEnabled.ValueBool())
 		}
+
+		if !data.FetchValuesPredicate.IsNull() {
+			putData.FetchValuesPredicate = nullable.NewNullableWithValue(data.FetchValuesPredicate.ValueString())
+		}
+
 		if isChangedBootstrapDatabase {
 			database, err = r.client.FindDatabase(ctx, data.DatabaseName.ValueString())
 			if err != nil {
@@ -304,6 +321,15 @@ func (r *DatasetResource) Create(ctx context.Context, req resource.CreateRequest
 			putData.Owners = ownerIds
 		}
 
+		if !data.CertifiedBy.IsNull() || data.CertifiedBy.ValueString() != "" {
+			extra, err := data.toExtra()
+			if err != nil {
+				resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to marshal extra data for Dataset '%s': %s", data.TableName.ValueString(), err))
+				return
+			}
+			putData.Extra = nullable.NewNullableWithValue(extra)
+		}
+
 		d, err = r.client.UpdateDataset(ctx, d.Id, putData)
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update Dataset with ID %d: %s", d.Id, err))
@@ -311,7 +337,11 @@ func (r *DatasetResource) Create(ctx context.Context, req resource.CreateRequest
 		}
 	}
 
-	data.updateState(d)
+	if err := data.updateState(d); err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update state for Dataset with ID %d: %s", d.Id, err))
+		return
+	}
+
 	data.BootstrapDatabaseId = types.Int64Value(int64(bootstrapDatabaseId))
 	if isChangedBootstrapDatabase {
 		data.BootstrapDatabaseName = types.StringValue(bootstrapDatabaseName)
@@ -340,7 +370,10 @@ func (r *DatasetResource) Read(ctx context.Context, req resource.ReadRequest, re
 		return
 	}
 
-	data.updateState(t)
+	if err := data.updateState(t); err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update state for Dataset with ID %d: %s", data.Id.ValueInt64(), err))
+		return
+	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
@@ -369,6 +402,10 @@ func (r *DatasetResource) Update(ctx context.Context, req resource.UpdateRequest
 	if !plan.FilterSelectEnabled.IsNull() {
 		putData.FilterSelectEnabled = nullable.NewNullableWithValue(plan.FilterSelectEnabled.ValueBool())
 	}
+	if !plan.FetchValuesPredicate.IsNull() {
+		putData.FetchValuesPredicate = nullable.NewNullableWithValue(plan.FetchValuesPredicate.ValueString())
+	}
+
 	if !plan.Sql.IsNull() {
 		putData.Sql = nullable.NewNullableWithValue(plan.Sql.ValueString())
 	}
@@ -400,6 +437,15 @@ func (r *DatasetResource) Update(ctx context.Context, req resource.UpdateRequest
 		putData.Owners = ownerIds
 	}
 
+	if !plan.CertifiedBy.IsNull() || plan.CertifiedBy.ValueString() != "" {
+		extra, err := plan.toExtra()
+		if err != nil {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to marshal extra data for Dataset '%s': %s", plan.TableName.ValueString(), err))
+			return
+		}
+		putData.Extra = nullable.NewNullableWithValue(extra)
+	}
+
 	g, err := r.client.UpdateDataset(ctx, int(state.Id.ValueInt64()), putData)
 
 	if err != nil {
@@ -407,7 +453,11 @@ func (r *DatasetResource) Update(ctx context.Context, req resource.UpdateRequest
 		return
 	}
 
-	state.updateState(g)
+	if err := state.updateState(g); err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update state for Dataset with ID %d: %s", state.Id.ValueInt64(), err))
+		return
+	}
+
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
 
